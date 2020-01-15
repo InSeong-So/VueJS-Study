@@ -1,23 +1,31 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <title>hello vue.js</title>
-    <script src="http://unpkg.com/vue@2.5.16/dist/vue.js"></script>
+    <title>Vue Sample</title>
 </head>
 
 <body>
-    <div id="simple">
-        <h2>{{message}}</h2>
+    <div id="app-4">
+        <ol>
+            <li v-for="todo in todos">
+                {{ todo.text }}
+            </li>
+        </ol>
     </div>
-    <script tpye="text/javascript">
-        var model = {
-            message: 'Hello Vue.js World!2'
-        };
 
-        var simple = new Vue({
-            el: '#simple',
-            data: model
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <script>
+        var app4 = new Vue({
+            el: '#app-4',
+            data: {
+                todos: [{
+                    text: 'JavaScript 배우기'
+                }, {
+                    text: 'Vue 배우기'
+                }, {
+                    text: '무언가 멋진 것을 만들기'
+                }]
+            }
         })
     </script>
 </body>
