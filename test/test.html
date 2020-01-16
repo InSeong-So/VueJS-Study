@@ -674,27 +674,27 @@
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     $(document).ready(function() {
-        $("#Profile").fadeIn(1000);
-
-
         var elements = document.getElementsByClassName('typewrite');
         for (var i = 0; i < elements.length; i++) {
             var toRotate = elements[i].getAttribute('data-type');
             var period = elements[i].getAttribute('data-period');
             if (toRotate) {
-                new TxtType(elements[i], JSON.parse(toRotate), period);
+                new DayoungsApp.baseCode(elements[i], JSON.parse(toRotate), period);
             }
         }
-
-        var css = document.createElement("style");
-        css.type = "text/css";
-        css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid hsl(0, 0%, 21%)}";
-        document.body.appendChild(css);
     });
 
     new Vue({
         el: "#DayoungsApp",
         data: {},
+        mounted() {
+            $("#Profile").fadeIn(1000);
+
+            var css = document.createElement("style");
+            css.type = "text/css";
+            css.innerHTML = ".typewrite > .wrap { border-right: 0.08em solid hsl(0, 0%, 21%)}";
+            document.body.appendChild(css);
+        },
         methods: {
             showSection: function(name) {
                 DayoungsApp.hideSection()
@@ -738,77 +738,62 @@
                 $("#Certificate").fadeOut(300);
                 return;
             }
+        },
+        tick: function() {
+            var i = DayoungsApp.baseCode.loopNum % DayoungsApp.baseCode.toRotate.length;
+            var fullTxt = DayoungsApp.baseCode.toRotate[i];
+
+            if (DayoungsApp.baseCode.isDeleting) {
+                DayoungsApp.baseCode.txt = fullTxt.substring(0, DayoungsApp.baseCode.txt.length - 1);
+            } else {
+                DayoungsApp.baseCode.txt = fullTxt.substring(0, DayoungsApp.baseCode.txt.length + 1);
+            }
+
+            DayoungsApp.baseCode.el.innerHTML = '<span class="wrap title is-3 pp">' + DayoungsApp.baseCode.txt + '</span>';
+
+            var that = DayoungsApp.baseCode;
+            var delta = 200 - Math.random() * 100;
+
+            if (DayoungsApp.baseCode.isDeleting) {
+                delta /= 2;
+            }
+
+            if (!DayoungsApp.baseCode.isDeleting && DayoungsApp.baseCode.txt === fullTxt) {
+                delta = DayoungsApp.baseCode.period;
+                DayoungsApp.baseCode.isDeleting = true;
+            } else if (DayoungsApp.baseCode.isDeleting && DayoungsApp.baseCode.txt === '') {
+                DayoungsApp.baseCode.isDeleting = false;
+                DayoungsApp.baseCode.loopNum++;
+                delta = 500;
+            }
+
+            setTimeout(function() {
+                that.tick();
+            }, delta);
+        },
+        baseCode: function() {
+            return {
+                el: "",
+                data: {
+                    toRotate: "",
+                    el: "",
+                    loopNum: 0,
+                    period: 0,
+                    txt: "",
+                    isDeleting: false
+                },
+                mounted(el, toRotate, period) {
+                    this.toRotate = toRotate;
+                    this.el = el;
+                    this.loopNum = 0;
+                    this.period = parseInt(period, 10) || 2000;
+                    this.txt = '';
+                    DayoungsApp.tick();
+                    this.isDeleting = false;
+                }
+            }
         }
     }
-
-    // call() : 상위 context 를 변경하는 함수
-    // 인자값 : 함수의 매개변수에 접근할 수 있는 속성
-    // 즉 매개변수로 넘어온 값들을 array로 변경하겠다는 것
-    // var $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-
-    // console.log($navbarBurgers);
-
-    // // Check if there are any nav burgers
-    // if ($navbarBurgers.length > 0) {
-
-    //     // Add a click event on each of them
-    //     $navbarBurgers.forEach(function($el) {
-    //         $el.addEventListener('click', function() {
-
-    //             // Get the target from the "data-target" attribute
-    //             var target = $el.dataset.target;
-    //             var $target = document.getElementById(target);
-
-    //             // Toggle the class on both the "navbar-burger" and the "navbar-menu"
-    //             $el.classList.toggle('is-active');
-    //             $target.classList.toggle('is-active');
-
-    //         });
-    //     });
-    // }
-
-    var TxtType = function(el, toRotate, period) {
-        this.toRotate = toRotate;
-        this.el = el;
-        this.loopNum = 0;
-        this.period = parseInt(period, 10) || 2000;
-        this.txt = '';
-        this.tick();
-        this.isDeleting = false;
-    };
-
-    TxtType.prototype.tick = function() {
-        var i = this.loopNum % this.toRotate.length;
-        var fullTxt = this.toRotate[i];
-
-        if (this.isDeleting) {
-            this.txt = fullTxt.substring(0, this.txt.length - 1);
-        } else {
-            this.txt = fullTxt.substring(0, this.txt.length + 1);
-        }
-
-        this.el.innerHTML = '<span class="wrap title is-3 pp">' + this.txt + '</span>';
-
-        var that = this;
-        var delta = 200 - Math.random() * 100;
-
-        if (this.isDeleting) {
-            delta /= 2;
-        }
-
-        if (!this.isDeleting && this.txt === fullTxt) {
-            delta = this.period;
-            this.isDeleting = true;
-        } else if (this.isDeleting && this.txt === '') {
-            this.isDeleting = false;
-            this.loopNum++;
-            delta = 500;
-        }
-
-        setTimeout(function() {
-            that.tick();
-        }, delta);
-    };
 </script>
 
 </html>
