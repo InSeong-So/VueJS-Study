@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app" align="center" class="container">
+        <h1><b>로그인</b></h1>
+        <!--  로그인 폼 시작 -->
+        <table align="center" class="table" style="width: 50%">
+            <tr>
+                <td>아이디</td>
+                <td><input id="memberId" class="form-control" type="text" value="goodee"></td>
+            </tr>
+            <tr>
+                <td>비밀번호</td>
+                <td><input id="memberPw" class="form-control" type="password" value="1"></td>
+            </tr>
+        </table>
+        <!-- 로그인 끝 -->
+        <hr>
+        <!-- 버튼리스트 -->
+        <button id="loginBtn" v-on:click="loginBtnClick" class="btn btn-info">로그인</button>
+        <button id="toHomeBtn" v-on:click="toHomeBtnClick" class="btn btn-primary">홈</button>
+        <hr>
+        <!-- 공용아이디 표시 -->
+        <p>공용 아이디: goodee
+            <p>
+                <p>공용 비밀번호: 1
+                    <p>
+    </div>
+</body>
+<!-- 스크립트 분리  -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/puzzle/scripts/index.js"></script>
+
+</html>

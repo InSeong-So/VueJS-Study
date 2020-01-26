@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app" align="center" class="container">
+        <h1><b>마이페이지</b></h1>
+        <hr>
+        <!--마이페이지 정보 기입 폼 -->
+        <div class="well">
+            <table class="" style="width: 50%">
+                <tr>
+                    <td>
+                        <label for="memberId">아이디<small>(변경 불가)</small></label>
+                        <input id="memberId" class="form-control" type="text" readonly>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="memberPw">기존 비밀번호</label>
+                        <input id="memberPw" class="form-control" placeholder="기존 비밀번호" type="password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="newMemberPw">변경 비밀번호</label>
+                        <input id="newMemberPw" class="form-control" placeholder="변경할 비밀번호 " type="password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="newMemberPw2">비밀번호 확인</label>
+                        <input id="newMemberPw2" class="form-control" placeholder="변경할 비밀번호 확인" type="password">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <!--마이페이지 정보 기입 폼 끝 -->
+        <!-- 바로가기 버튼 리스트  -->
+        <button class="btn btn-primary" id="editInfoBtn" v-on:click="editInfoBtnClick">수정하기</button>
+        <button id="toHome" class="btn btn-info" v-on:click="toHomeBtnClick">홈으로 ></button>
+        <button id="withDrawBtn" class="btn btn-danger" v-on:click="withDrawBtnClick">회원탈퇴</button>
+    </div>
+</body>
+<!-- 스크립트 분리  -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/puzzle/scripts/index.js"></script>
+
+</html>

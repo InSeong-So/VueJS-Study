@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+</head>
+
+<body>
+    <!-- 메인 시작 -->
+    <div id="app" align="center" class="container">
+        <h1><b>회원가입</b></h1>
+        <table class="table" style="width: 50%">
+            <tr>
+                <td>아이디</td>
+                <td><input id="memberId" class="form-control" type="text"></td>
+            </tr>
+            <tr>
+                <td>비밀번호</td>
+                <td><input id="memberPw" class="form-control" type="password"></td>
+            </tr>
+        </table>
+        <button id="joinBtn" class="btn btn-outline-info" v-on:click="joinBtnClick">회원가입</button>
+    </div>
+</body>
+<!-- 스크립트 분리  -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="/puzzle/scripts/index.js"></script>
+
+</html>
