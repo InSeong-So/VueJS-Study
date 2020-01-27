@@ -7,15 +7,6 @@
     <!-- 부트스트랩 -->
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <!-- 제이쿼리 -->
-    <script src="/jquery-ex/scripts/jquery-3.4.1.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <style>
         /* 카드 뒤집기 애니메이션 담당 css */
         
@@ -84,7 +75,7 @@
 </head>
 
 <body>
-    <div align="center">
+    <div id="puzzleApp" align="center">
         <h4><b><span class="text-primary">🧩 퍼즐 마인드 🧩</span> : 같은 그림 맞추기 !</b></h4>
         😆 <b id="user"></b>님 즐거운 시간 보내세요 💖
         <hr>
@@ -92,7 +83,7 @@
             <!-- 남은 초 표시 -->
             <b id="timer"> 시작! </b> &nbsp;
             <!-- 힌트 버튼 -->
-            <button class="btn btn-sm btn-info text-warning" id="hintBtn">힌트</button> &nbsp;
+            <button class="btn btn-sm btn-info text-warning" id="hintBtn" v-on:click="hintBtnClick">힌트</button> &nbsp;
             <!-- 남은 힌트 횟수 표시 -->
             <small style="font-style: italic;">
 			남은 힌트 횟수: <b><span id="remainHint"></span></b> 
@@ -107,24 +98,21 @@
         <p>도전횟수:&nbsp;<b id="count">0</b>회 </p>
         <hr>
         <!-- 바로가기 버튼 리스트 -->
-        <button id="againBtn" class="btn btn-success">다시하기 💦</button>
-        <button id="toHomeBtn" class="btn btn-primary">홈으로 💥 </button>
-        <button id="logoutBtn" class="btn btn-warning">로그아웃 💨</button>
-    </div>
-    <div id="app" v-cloak>
-        <h1>Timer</h1>
-        <timer-setup v-if="!time" @set-time="setTime"></timer-setup>
-        <div v-else>
-            <timer :time="prettyTime"></timer>
-            <div>
-                <button v-if="!isRunning" @click="start">Start</button>
-                <button v-if="isRunning" @click="stop">Stop</button>
-                <button @click="reset">Reset</button>
-            </div>
-        </div>
+        <button id="againBtn" class="btn btn-success" v-on:click="againBtnClick">다시하기 💦</button>
+        <button id="toHomeBtn" class="btn btn-primary" v-on:click="toHomeBtnClick">홈으로 💥 </button>
+        <button id="logoutBtn" class="btn btn-warning" v-on:click="logoutClick">로그아웃 💨</button>
     </div>
 </body>
-<!--  퍼즐 스크립트 분리 -->
+<!-- 스크립트 분리  -->
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Popper JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script src="/puzzle/scripts/puzzle.js"></script>
 
 </html>

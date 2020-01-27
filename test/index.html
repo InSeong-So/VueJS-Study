@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>puzzle mind Home</title>
+    <!-- 부트스트랩  -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        #view {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" align="center" class="container">
+        <!-- 사이트 상단부 타이블   -->
+        <marquee direction="left" scrollamount="13" align="center">
+            <h1><b class="text-info">🧩 퍼즐 마인드 🧩 </b></h1>
+        </marquee>
+        <hr>
+        <!-- 유저 아이디 표시 -->
+        <p id="loginState"></p>
+        <hr>
+        <!-- 카테고리 버튼 목록  btn-group -->
+        <div id="menu" class="btn-group">
+            <button type='button' class='btn btn-success' id='totalTop10' v-on:click="totalTop10Click">🏆종합 TOP10</button>
+            <button type='button' class='btn btn-success' id='dailyTop10' v-on:click="dailyTop10Click">🥇오늘의 TOP10</button>
+            <button type='button' class='btn btn-success' id='monthlyTop10' v-on:click="monthlyTop10Click">🏅이달의 TOP10</button>
+            <button type='button' class='btn btn-warning notLogin' id='login' v-on:click="loginClick">🔑로그인</button>
+            <button type='button' class='btn btn-warning notLogin' id='signUp' v-on:click="signUpClick">🎆회원가입</button>
+            <button type='button' class='btn btn-danger Logined' id='gameStart' v-on:click='gameStartClick'>🎮게임 스타트!</button>
+            <button type='button' class='btn btn-primary Logined' id='myPage' v-on:click='myPageClick'>👀마이페이지</button>
+            <button type='button' class='btn btn-primary Logined' id='myReport' v-on:click='myReportClick'>📃마이리포트</button>
+            <button type='button' class='btn btn-warning Logined' id='logout' v-on:click='logoutClick'>로그아웃 💨</button>
+        </div>
+        <hr>
+        <!-- 클릭한 버튼에 따라 텍스트 표시  top10Text -->
+        <h2><b id="top10Text"></b></h2>
+        <!-- 랭킹/마이리포트 리스트 시작  view-->
+        <div align="center" id="view">
+            <!-- 리포트  -->
+            <table id="report" class="table table-striped table-hover" style="text-align: center;">
+
+            </table>
+        </div>
+        <!--랭킹/마이리포트 리스트 끝  -->
+    </div>
+    <!-- 스크립트 분리  -->
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/puzzle/scripts/index.js"></script>
+</body>
+
+</html>

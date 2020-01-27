@@ -1,11 +1,203 @@
+//로그아웃 버튼
+$("#logoutBtn").click(function() {
+    console.log("out");
+    $.ajax({
+        // 로그아웃 서블릿을 통해 세션 없에기 (invalidate)
+        url: "/puzzle/Logout",
+        method: "POST",
+        success: function(json) {
+            console.log("sessionInfo : ", loginState);
+            location.href = "/puzzle/index.html";
+            return;
+        },
+        error: function() {
+            alert("로그아웃 실패.");
+        },
+        fail: function() {
+            alert("로그아웃 실패.");
+        }
+    });
+});
+// 다시하기 버튼
+$("#againBtn").click(function() {
+    alert("다시 시작!");
+    location.href = "/puzzle/puzzle.html";
+});
+// 홈으로 버튼 
+$("#toHomeBtn").click(function() {
+    location.href = "/puzzle/index.html";
+});
+
+// 힌트 버튼 클릭시 
+$("#hintBtn").click(function() {
+    // 게임 시작 전에 힌트 버튼 클릭시 작동 방지 
+    if (temp < 1) {
+        return;
+    }
+    remainHint--; //힌트 사용 가능 횟수 감소
+    // 남은 힌트 수 업데이트
+    $("#remainHint").text(remainHint);
+    // 힌트 사용  맞추지 못한 카드 모두 뒤집어 패 보여주기 - 맞춘 쌍은 뒷면을 보여 헷갈림 방지 
+    $(".card").each(function() {
+            $(this).toggleClass("flipped");
+        })
+        // 클릭 방지 전환
+    temp = 0;
+    console.log("힌트 실행중 temp:" + temp);
+    // 2초 대기후  카드 뒤집기 
+    setTimeout(function() {
+        console.log("대기 후 다시 돌림 ")
+        $(".card").each(function() {
+                $(this).toggleClass("flipped");
+            })
+            // 클릭 가능으로 전환 
+        temp = 1;
+        console.log("힌트 실행 후 temp:", temp);
+    }, 1000);
+    // 힌트 실행 후 남은 횟수 0 이면 비활성화 
+    if (remainHint == 0) {
+        $("#hintBtn").attr("disabled", "disabled");
+        return;
+    }
+});
+
 //stage 1  model1 	4*4
+var model1 = ["p0.png", "p0.png",
+    "p1.png", "p1.png",
+    "p2.png", "p2.png",
+    "p3.png", "p3.png",
+    "p4.png", "p4.png",
+    "p5.png", "p5.png",
+    "p6.png", "p6.png",
+    "p7.png", "p7.png",
+];
 
+//stage 2 model2	6*6
+var model2 = ["p0.png", "p0.png",
+    "p1.png", "p1.png",
+    "p2.png", "p2.png",
+    "p3.png", "p3.png",
+    "p4.png", "p4.png",
+    "p5.png", "p5.png",
+    "p6.png", "p6.png",
+    "p7.png", "p7.png",
+    "p8.png", "p8.png",
+    "p9.png", "p9.png",
+    "p10.png", "p10.png",
+    "p11.png", "p11.png",
+    "p12.png", "p12.png",
+    "p13.png", "p13.png",
+    "p14.png", "p14.png",
+    "p15.png", "p15.png",
+    "p16.png", "p16.png",
+    "p17.png", "p17.png",
+]; // [0] ~ [17]
 
-// 자바스크립트 코드
+//stage 3 model3	8*8
+var model3 = ["p0.png", "p0.png",
+    "p1.png", "p1.png",
+    "p2.png", "p2.png",
+    "p3.png", "p3.png",
+    "p4.png", "p4.png",
+    "p5.png", "p5.png",
+    "p6.png", "p6.png",
+    "p7.png", "p7.png",
+    "p8.png", "p8.png",
+    "p9.png", "p9.png",
+    "p10.png", "p10.png",
+    "p11.png", "p11.png",
+    "p12.png", "p12.png",
+    "p13.png", "p13.png",
+    "p14.png", "p14.png",
+    "p15.png", "p15.png",
+    "p16.png", "p16.png",
+    "p17.png", "p17.png",
+    "p0.png", "p0.png",
+    "p1.png", "p1.png",
+    "p2.png", "p2.png",
+    "p3.png", "p3.png",
+    "p4.png", "p4.png",
+    "p5.png", "p5.png",
+    "p6.png", "p6.png",
+    "p7.png", "p7.png",
+    "p8.png", "p8.png",
+    "p9.png", "p9.png",
+    "p10.png", "p10.png",
+    "p11.png", "p11.png",
+    "p12.png", "p12.png",
+    "p13.png", "p13.png",
+]; // [0] ~ [31]
+
+// 변수 초기화 
+// 로그인한 유저의 아이디를 담을 변수 초기화
+var loginState = "";
+// 타이머 수 저장할 변수 초기화
+var timerNum = 0;
+// 게임 시작후 클릭이 가능한지 여부를 담는 변수 초기화
+var temp = 0; // 0일시 클릭 불가 1일시 클릭 가능
+// 카드 출력시 행수를 담는 변수 변수 초기화
+var cardRow = 4; // 4, 6, 8 
+// 남은 힌트 개수 담는 변수 초기화
+var remainHint = 2;
+// 스테이지 시작시 기억을 위해 주는 시간 
+var timeLeft = 4;
+
+// 자바스크립트 코드 
 $(document).ready(function() {
+    var count = 0;
 
+    // 로그인 확인
+    $.ajax({
+        url: "/puzzle/GetSessionInfo",
+        async: false, // 동기요청
+        method: "POST",
+        success: function(json) {
+            loginState = json;
+            console.log("sessionInfo : ", loginState);
+        }
+    });
 
+    console.log(loginState);
+    // 로그인 안했을 시 돌아가기
+    if (loginState == null) {
+        location.href = "/puzzle/signIn.html";
+        alert("로그인을 해야 게임을 플레이 할 수 있습니다 T.T \n 🎀  로그인 하러 고고 🎀");
+        return false;
+    }
+    // 상단에 로그인 id표시
+    $("#user").text(loginState);
 
+    //게임 시작시 알림 띄움
+    alert("3초 동안 최대한 많이 기억하세요 ! \n확인 버튼을 누르면 시작합니다 !");
+    // 힌트 개수 표시
+    $("#remainHint").text(remainHint);
+    // 스테이지 초기화
+    var stage = 1;
+    // 모델 초기화 
+    var model = model1;
+    // model이 뒤섞여 순서가 랜덤으로 출력.
+    for (var i = 0; i < 100000; i++) {
+        var ran = Math.floor(Math.random() * model.length); // 0~ 카드갯수 -1 까지
+        var tmp = model[0];
+        model[0] = model[ran];
+        model[ran] = tmp
+    }
+
+    // 16개 이미지 출력.
+    $("#board").append("<tr>");
+    $(model).each(function(index, item) {
+        // 우클릭 방지 : oncontextmenu ='return false'
+        // 드래그 방지 : ondragstart ='return false'
+        var html = "<td oncontextmenu ='return false' ondragstart ='return false' ><div class='cards'>" +
+            "<div class='card' id='pic-" + item + "'><div class='front' id='p" + index + "'><input type='image' src='/puzzle/pzImage/" +
+            item + "'></div><div class='back'><p>⌛</p></div></div></div></td>";
+        // 줄바꿈
+        if (index / cardRow > 0 && index % cardRow == 0) {
+            console.log(index);
+            $("#board").append("</tr><tr>");
+        }
+        $("#board").append(html);
+    });
     // 타이머 시작
     timer = setInterval(function() {
         console.log(timeLeft, "<- 남은시간!!! @timer");
@@ -16,7 +208,7 @@ $(document).ready(function() {
             // 0 이 되면 시작 
             if (timeLeft == 0) {
                 $(".card").each(function(i) {
-                    let card = $(this);
+                    var card = $(this);
                     // 순서대로 뒤집기
                     flip = setTimeout(function() {
                         console.log("works!");
@@ -37,69 +229,6 @@ $(document).ready(function() {
         $("#timer").text("경과시간 " + timerNum + " 초");
     }, 1000);
 
-    //로그아웃 버튼
-    $("#logoutBtn").click(function() {
-        console.log("out");
-        $.ajax({
-            // 로그아웃 서블릿을 통해 세션 없에기 (invalidate)
-            url: "/puzzle/Logout",
-            method: "POST",
-            success: function(json) {
-                console.log("sessionInfo : ", loginState);
-                location.href = "/puzzle/index.html";
-                return;
-            },
-            error: function() {
-                alert("로그아웃 실패.");
-            },
-            fail: function() {
-                alert("로그아웃 실패.");
-            }
-        });
-    });
-    // 다시하기 버튼
-    $("#againBtn").click(function() {
-        alert("다시 시작!");
-        location.href = "/puzzle/puzzle.html";
-    });
-    // 홈으로 버튼 
-    $("#toHomeBtn").click(function() {
-        location.href = "/puzzle/index.html";
-    });
-
-    // 힌트 버튼 클릭시 
-    $("#hintBtn").click(function() {
-        // 게임 시작 전에 힌트 버튼 클릭시 작동 방지 
-        if (temp < 1) {
-            return;
-        }
-        remainHint--; //힌트 사용 가능 횟수 감소
-        // 남은 힌트 수 업데이트
-        $("#remainHint").text(remainHint);
-        // 힌트 사용  맞추지 못한 카드 모두 뒤집어 패 보여주기 - 맞춘 쌍은 뒷면을 보여 헷갈림 방지 
-        $(".card").each(function() {
-                $(this).toggleClass("flipped");
-            })
-            // 클릭 방지 전환
-        temp = 0;
-        console.log("힌트 실행중 temp:" + temp);
-        // 2초 대기후  카드 뒤집기 
-        setTimeout(function() {
-            console.log("대기 후 다시 돌림 ")
-            $(".card").each(function() {
-                    $(this).toggleClass("flipped");
-                })
-                // 클릭 가능으로 전환 
-            temp = 1;
-            console.log("힌트 실행 후 temp:", temp);
-        }, 1000);
-        // 힌트 실행 후 남은 횟수 0 이면 비활성화 
-        if (remainHint == 0) {
-            $("#hintBtn").attr("disabled", "disabled");
-            return;
-        }
-    })
-
     /*
      * 게임 실행
      * 1. 변수 선언
@@ -110,16 +239,16 @@ $(document).ready(function() {
 
     // 게임 실행을 위한 변수 설정
     // 총 클릭횟수를 담을 변수 초기화
-    let total = 0;
+    var total = 0;
     // 카드 쌍 클릭시 구분을 위한 변수 초기화
-    let state = 0; // 1번 클릭시 1 2번째 클릭시 2
+    var state = 0; // 1번 클릭시 1 2번째 클릭시 2
     // 맞춘 카드쌍의 개수를 담을 변수 초기화 
-    let success = 0; // 카드 쌍이 8쌍이면 8일시 리턴.
+    var success = 0; // 카드 쌍이 8쌍이면 8일시 리턴.
     // 첫번째와 두번째 카드를 비교할 때 쓸 변수 초기화
-    let onePic = null;
-    let twoPic = null;
+    var onePic = null;
+    var twoPic = null;
     // 카드 클릭시 실행
-    $(document).on("click", ".card", function() {
+    $(".card").click(function() {
         console.log($(this), "click!");
         // 게임이 시작전이면 클릭 못하게 막기
         if (temp < 1) {
@@ -187,9 +316,9 @@ $(document).ready(function() {
                         }
                         console.log("***model.length: ", model.length);
                         // 모델 순서 섞기
-                        for (let i = 0; i < 100000; i++) {
-                            let ran = Math.floor(Math.random() * model.length);
-                            let tmp = model[0];
+                        for (var i = 0; i < 100000; i++) {
+                            var ran = Math.floor(Math.random() * model.length);
+                            var tmp = model[0];
                             model[0] = model[ran];
                             model[ran] = tmp
                         }
@@ -199,7 +328,7 @@ $(document).ready(function() {
                         $(model).each(function(index, item) {
                             // 우클릭 방지 : oncontextmenu ='return false'
                             // 드래그 방지 : ondragstart ='return false'
-                            let html = "<td oncontextmenu ='return false' ondragstart ='return false' ><div class='cards'>" +
+                            var html = "<td oncontextmenu ='return false' ondragstart ='return false' ><div class='cards'>" +
                                 "<div class='card' id='pic-" + item + "'><div class='front' id='p" + index + "'><input type='image' src='/puzzle/pzImage/" +
                                 item + "'></div><div class='back'><p>🎆</p></div></div></div></td>";
                             // 줄바꿈 

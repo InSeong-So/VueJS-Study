@@ -2,18 +2,16 @@ new Vue({
     el: '#app',
     data: {
         loginUser: "",
-        report: "",
+        report: [{}],
     },
     methods: {
         //로그아웃 버튼
         logoutClick: function() {
             var $vm = this;
-            console.log("out");
             $.ajax({
                 url: "/puzzle/Logout",
                 method: "POST",
                 success: function(json) {
-                    console.log("sessionInfo : ", $vm.loginUser);
                     location.href = "/puzzle/index.html";
                     alert("로그아웃 하셨습니다.");
                     return;
@@ -28,19 +26,16 @@ new Vue({
         },
         // 로그인 버튼
         loginClick: function() {
-            console.log("go");
             location.href = "/puzzle/signIn.html";
         },
         // 회원가입 
         signUpClick: function() {
-            console.log("go");
             location.href = "/puzzle/signUp.html";
         },
         //순위 출력		
         // 종합 탑 10
         totalTop10Click: function() {
             var $vm = this;
-            console.log("totalTop10!");
             $("#top10Text").text("🏆 종합 Top 10 🏆");
             $("#report").empty();
             $vm.report = "";
@@ -49,7 +44,7 @@ new Vue({
                 url: "/puzzle/SelectTotalTop10",
                 method: "POST",
                 success: function(json) {
-                    //				console.log(json);
+                    $vm.report = json;
                     $vm.report += "<tbody>";
                     $(json).each(function(index, item) {
                         $vm.report += "<tr>";
@@ -59,7 +54,7 @@ new Vue({
                         $vm.report += "<td>" + item.timer + "</td>";
                         $vm.report += "<td>" + item.reportDate + "</td>";
                         $vm.report += "</tr>";
-                    })
+                    });
                     $vm.report += "</tbody>";
                     $("#report").append($vm.report);
                     $("#view").hide();
@@ -70,7 +65,6 @@ new Vue({
         // 데일리 탑10
         dailyTop10Click: function() {
             var $vm = this;
-            console.log("dailyTop10!");
             $("#top10Text").text("🥇 오늘의 Top 10 🥇");
             $("#report").empty();
             $vm.report = "";
@@ -78,7 +72,6 @@ new Vue({
                 url: "/puzzle/SelectTodayTop10",
                 method: "POST",
                 success: function(json) {
-                    //				console.log(json);					
                     if (json == "") {
                         $("#report").append("<hr><br><br><h1 class='display-4'><small>순위권에 든 플레이어가 없습니다!<br>오늘의 랭커가 되어보세요 !🔥</small></h1>");
                         $("#view").hide();
@@ -105,14 +98,12 @@ new Vue({
         // 먼슬리 탑10
         monthlyTop10Click: function() {
             var $vm = this;
-            console.log("monthlyTop10!");
             $("#top10Text").text("🏅 이달의 Top 10 🏅");
             $("#report").empty();
             $.ajax({
                 url: "/puzzle/SelectMonthlyTop10",
                 method: "POST",
                 success: function(json) {
-                    //				console.log(json);
                     $vm.report = "";
                     if (json == "") {
                         $("#report").append("<hr><br><br><h1 class='display-4'><small>순위권에 든 플레이어가 없습니다!<br>오늘의 랭커가 되어보세요 !🔥</small></h1>");
@@ -142,20 +133,17 @@ new Vue({
         // 게임스타트 버튼
         gameStartClick: function() {
             var $vm = this;
-            console.log("game!");
             location.href = "/puzzle/puzzle.html";
         },
 
         // 마이페이지 버튼
         myPageClick: function() {
             var $vm = this;
-            console.log("myPage!");
             location.href = "/puzzle/myPage.html";
         },
         // 마이리포트 버튼
         myReportClick: function() {
             var $vm = this;
-            console.log("myReport!");
             $("#top10Text").text("📃 마이 리포트 📃");
             $("#report").empty();
             $vm.report = "";
@@ -193,7 +181,6 @@ new Vue({
         //로그인 버튼 클릭시 회원 인덱스 페이지로 이동. 
         loginBtnClick: function() {
             var $vm = this;
-            console.log("#loginBtn");
             $.ajax({
                 // 포스트 방식으로 Login 서블릿으로 넘겨 유저가 입력한 정보와 일치하는지 확인 및 유저 아이디 가져오기 
                 url: "/puzzle/Login",
@@ -205,7 +192,6 @@ new Vue({
                 success: function(json) {
                     $vm.loginUser = json;
                     // 로그인한 유저 아이디
-                    console.log("sessionInfo : ", $vm.loginUser);
                     location.href = "/puzzle/index.html";
                     return;
                 }, // 실패시 알림
@@ -293,7 +279,6 @@ new Vue({
             method: "POST",
             success: function(json) {
                 $vm.loginUser = json;
-                console.log("sessionInfo : ", $vm.loginUser);
             }
         });
 
@@ -329,7 +314,6 @@ new Vue({
                 $(".notLogin").css("display", "none");
             }
             $("#loginState").append("<b>" + $vm.loginUser + "</b>님 어서오세요!");
-            console.log($vm.loginUser);
         }
     },
 
