@@ -5,29 +5,17 @@
 </head>
 
 <body>
-    <div id="example-2">
-        <!-- `greet`는 메소드 이름으로 아래에 정의되어 있습니다 -->
-        <button v-on:click="greet('sis')">Greet</button>
+    <div id="app-6">
+        <p>{{ message }}</p>
+        <input v-model="message">
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
     <script>
-        var example2 = new Vue({
-            el: '#example-2',
+        var app6 = new Vue({
+            el: '#app-6',
             data: {
-                name: 'Vue.js'
-            },
-            // 메소드는 `methods` 객체 안에 정의합니다
-            methods: {
-                greet: function(event) {
-                    // 메소드 안에서 사용하는 `this` 는 Vue 인스턴스를 가리킵니다
-                    alert('Hello ' + this.name + '!')
-                        // `event` 는 네이티브 DOM 이벤트입니다
-                    if (event) {
-                        // alert(event.target.tagName)
-                        alert(event)
-                    }
-                }
+                message: '안녕하세요 Vue!'
             }
         })
     </script>

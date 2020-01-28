@@ -214,3 +214,72 @@ Hello Vue.js!
 
 <hr>
 <br>
+
+## 사용자 입력 핸들링
+> 사용자와 앱의 상호 작용을 위해 `v-on 디렉티브`를 사용하여 `Vue 인스턴스에서 메소드를 호출`하는 이벤트 리스너를 추가 할 수 있다.
+
+```html
+<html>
+
+<head>
+    <title>Vue Sample</title>
+</head>
+
+<body>
+    <div id="app-5">
+        <p>{{ message }}</p>
+        <button v-on:click="reverseMessage">메시지 뒤집기</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <script>
+        var app5 = new Vue({
+            el: '#app-5',
+            data: {
+                message: '안녕하세요! Vue.js!'
+            },
+            methods: {
+                reverseMessage: function() {
+                    this.message = this.message.split('').reverse().join('')
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
+```
+
+- 직접적인 DOM 컨트롤 없이 앱의 상태만을 업데이트
+  - 모든 DOM 조작은 Vue에 의해 처리되며 작성한 코드는 기본 로직에만 포커싱 됨
+
+- 추가적으로 입력과 앱 상태를 양방향으로 바인딩하는 `v-model 디렉티브`를 제공
+    ```html
+    <html>
+
+    <head>
+        <title>Vue Sample</title>
+    </head>
+
+    <body>
+        <div id="app-6">
+            <p>{{ message }}</p>
+            <input v-model="message">
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+        <script>
+            var app6 = new Vue({
+                el: '#app-6',
+                data: {
+                    message: '안녕하세요 Vue!'
+                }
+            })
+        </script>
+    </body>
+
+    </html>
+    ```
+
+<hr>
+<br>
