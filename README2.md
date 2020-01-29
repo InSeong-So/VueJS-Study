@@ -283,3 +283,70 @@ Hello Vue.js!
 
 <hr>
 <br>
+
+## 컴포넌트를 사용한 작성
+> 작고 독립적이며 재사용이 가능해 대규모 애플리케이션을 쉽게 구축할 수 있게 해주는 추상적 개념
+> - Vue의 컴포넌트는 미리 정의된 옵션을 가진 Vue 인스턴스
+
+```js
+// todo-item라는 명칭의 컴포넌트 정의
+Vue.component('todo-item', {
+  template: '<li>할일 항목 하나입니다.</li>'
+})
+
+var app = new Vue(...)
+```
+
+  - 다른 템플릿에서 선언한 컴포넌트를 사용하는 방법
+    ```js
+    <ol>
+        <!-- todo-item 컴포넌트의 인스턴스 만들기 -->
+        <todo-item></todo-item>
+    </ol>
+    ```
+
+  - 부모 영역의 데이터를 자식 컴포넌트에 전달하기
+    ```js
+    Vue.component('todo-item', {
+        // todo-item 컴포넌트는 "prop" 이라는 사용자 정의 속성을 입력받을 수 있다.
+        // 이 prop의 명칭은 todo로 한다.
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+    ```
+
+- 위의 코드를 참고하여 `v-bind`를 사용해 todo-item 컴포넌트에 전달하기
+    ```html
+    <div id="app-7">
+        <ol>
+            <!--
+            todo-item에 todo 객체를 제공하며 컨텐츠는 동적으로 바뀔 수 있다.
+            각각의 구성 요소에 '키'를 제공해야 한다.
+            -->
+            <todo-item v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+        </ol>
+    </div>
+    ```
+    ```js
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+
+    var app7 = new Vue({
+        el: '#app-7',
+        data: {
+            groceryList: [
+                { id: 0, text: 'Vegetables' },
+                { id: 1, text: 'Cheese' },
+                { id: 2, text: 'Whatever else humans are supposed to eat' }
+            ]
+        }
+    })
+    ```
+
+- 앱을 더 작은 단위로 나누고 자식을 props 인터페이스를 통해 부모로부터 합리적인 수준으로 분리했다.
+  - 이후 부모 앱에 영향을 주지 않으면서 <todo-item> 컴포넌트를 더 복잡한 템플릿과 로직으로 더욱 향상시킬 수 있다.
+
+<hr>
+<br>
