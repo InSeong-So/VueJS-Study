@@ -5,18 +5,47 @@
 </head>
 
 <body>
-    <div id="app-6">
-        <p>{{ message }}</p>
-        <input v-model="message">
+    <div id="testView">
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Name</th>
+                </tr>
+            </thead>
+            <testers>
+            </testers>
+        </table>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
-        var app6 = new Vue({
-            el: '#app-6',
-            data: {
-                message: '안녕하세요 Vue!'
+        var Testers = {
+            template: `
+        <tbody>
+            <tr v-for="list in testData">
+                <th>{{ list.no }}</th>
+                <td>{{ list.name }}</td>
+            </tr>
+        </tbody>
+    `,
+            data: function() {
+                return {
+                    testData: [{
+                        no: 1,
+                        name: "test1"
+                    }, {
+                        no: 2,
+                        name: "test2"
+                    }]
+                }
             }
+        }
+        var testView = new Vue({
+            el: "#testView",
+            components: {
+                'testers': Testers
+            },
+            method: {}
         })
     </script>
 </body>
