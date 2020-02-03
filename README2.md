@@ -372,3 +372,84 @@ var app = new Vue(...)
 
 <hr>
 <br>
+
+## 속성과 메소드
+> 각 Vue 인스턴스는 data 객체에 있는 모든 속성을 `프록시 처리`한다.
+
+```js
+// 데이터 객체
+var data = { a: 1 }
+
+// Vue인스턴스에 데이터 객체 추가
+var vm = new Vue({
+  data: data
+})
+
+// 같은 객체 참조
+vm.a === data.a // => true
+
+// 속성 설정은 원본 데이터에도 영향을 끼친다
+vm.a = 2
+data.a // => 2
+
+// 위와 같이 아래도 똑같다
+data.a = 3
+vm.a // => 3
+```
+
+- 데이터가 변경되면 화면은 다시 렌더링된다. 기억해야할 것은 data에 있는 속성들은 `인스턴스가 생성될 때 존재한 것들만 반응형`이라는 점이다.
+
+```js
+// 아래와 같이 b라는 속성을 추가할 때
+vm.b = 'hi'
+```
+- 새 속성 b를 생성 이후에 추가하면 b가 변경되어도 화면이 갱신되지 않는다.
+  - 어떤 속성이 나중에 필요하다는 것을 알고 있으며, 빈 값이거나 존재하지 않은 상태로 시작한다면 아래와 같이 초기값을 지정할 필요가 있다.
+    ```js
+    data: {
+        newTodoText: '',
+        visitCount: 0,
+        hideCompletedTodos: false,
+        todos: [],
+        error: null
+    }
+    ```
+
+- 유일한 예외는 `Object.freeze()`를 사용하는 경우로, 이는 `기존 속성이 변경되는 것을 막아 반응성 시스템이 추적할 수 없다는 것을 의미`한다.
+    ```js
+    var obj = {
+        foo: 'bar'
+    }
+
+    Object.freeze(obj)
+
+    new Vue({
+        el: '#app',
+        data: obj
+    })
+    ```
+    ```html
+    <div id="app">
+        <p>{{ foo }}</p>
+        <!-- obj.foo는 더이상 변하지 않는다 -->
+        <button v-on:click="foo = 'baz'">Change it</button>
+    </div>
+    ```
+
+- Vue 인스턴스는 데이터 속성 이외에도 유용한 인스턴스 속성 및 메소드를 제공하며, 다른 사용자 정의 속성과 구분하기 위해 $ 접두어를 붙인다.
+    ```js
+    var data = { a: 1 }
+
+    var vm = new Vue({
+        el: '#example',
+        data: data
+    })
+
+    vm.$data === data // => true
+    vm.$el === document.getElementById('example') // => true
+
+    // $watch 는 인스턴스 메소드
+    vm.$watch('a', function (newVal, oldVal) {
+        // `vm.a`가 변경되면 호출
+    })
+    ```
