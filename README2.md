@@ -635,3 +635,85 @@ vm.b = 'hi'
 
 <hr>
 <br>
+
+# 템플릿 문법
+> 렌더링 된 DOM을 기본 Vue 인스턴스의 데이터에 선언적으로 바인딩 할 수있는 HTML 기반 템플릿 구문을 사용
+> - 가상 DOM 개념에 익숙하고 JavaScript의 기본 기능을 선호하는 경우 템플릿 대신 `렌더링 함수를 직접 작성`할 수 있으며 선택사항으로 JSX를 지원함
+
+## 보간법
+### 문자열
+> 데이터 바인딩의 가장 기본 형태는 “Mustache” 구문(이중 중괄호)을 사용한 텍스트 보간
+
+- Mustache 태그는 해당 데이터 객체의 msg 속성 값으로 대체되며 데이터 객체의 msg 속성이 변경될 때 마다 갱신된다.
+    ```js
+    <span>메시지: {{ msg }}</span>
+    ```
+
+- v-once 디렉티브를 사용하여 데이터 변경 시 업데이트 되지 않는 일회성 보간을 수행할 수 있으나 같은 노드의 바인딩에도 영향을 미친다.
+  ```js
+  <span v-once>다시는 변경하지 않습니다: {{ msg }}</span>
+  ```
+
+<br>
+
+### 원시 HTML
+> 이중 중괄호(mustaches)는 HTML이 아닌 일반 텍스트로 데이터를 해석
+> - 실제 HTML을 출력하려면 v-html 디렉티브를 사용할 것
+
+- span의 내용은 rawHtml로 대체되고, 이 때 데이터 바인딩은 무시된다.
+  - Vue는 문자열 기반 템플릿 엔진이 아니기 때문에 v-html을 이용해 템플릿을 사용할 수 없다.
+  
+  - 따라서 컴포넌트는 UI 재사용 및 구성을 위한 기본 단위로 사용하는 것을 추천한다.
+    ```js
+    <p>Using mustaches: {{ rawHtml }}</p>
+    <p>Using v-html directive: <span v-html="rawHtml"></span></p>
+    ```
+
+- 웹사이트에서 임의의 HTML을 동적으로 렌더링하면 XSS 취약점으로 쉽게 이어질 수 있어 매우 위험하다.
+  - 신뢰할 수 있는 콘텐츠에서만 HTML 보간을 사용하고 사용자가 제공한 콘텐츠에서는 절대 사용하면 안 된다.
+
+<br>
+
+### 속성
+> Mustaches는 HTML 속성에서 사용할 수 없으니 `v-bind 디렉티브`를 사용할 것
+
+- boolean 속성을 사용할 때 단순히 true인 경우 v-bind의 작동
+    ```js
+    <div v-bind:id="dynamicId"></div>
+    ```
+
+- `isButtonDisabled`가 `null`, `undefined` 또는 `false`의 값을 가지면 `disabled` 속성은 렌더링 된 `<button>엘리먼트`에 포함되지 않는다.
+    ```js
+    <button v-bind:disabled="isButtonDisabled">Button</button>
+    ```
+
+<br>
+
+### JavaScript 표현식 사용
+> Vue.js는 모든 데이터 바인딩 내에서 JavaScript 표현식의 모든 기능을 지원한다.
+
+- 이 표현식은 Vue 인스턴스 데이터 범위 내에서 JavaScript로 계산된다.
+    ```js
+    {{ number + 1 }}
+
+    {{ ok ? 'YES' : 'NO' }}
+
+    {{ message.split('').reverse().join('') }}
+
+    <div v-bind:id="'list-' + id"></div>
+    ```
+
+    - 단, 각 바인딩에 `하나의 단일 표현식만 포함`되므로 아래처럼 작성하면 안 된다.
+        ```js
+        <!-- 아래는 구문이므로 표현식이 아니다. -->
+        {{ var a = 1 }}
+
+        <!-- 조건문은 작동하지 않으므로 삼항 연산자를 사용해야 한다. -->
+        {{ if (ok) { return message } }}
+        ```
+
+- 템플릿 표현식은 샌드박스 처리되며 Math와 Date 같은 전역으로 사용 가능한 것에만 접근할 수 있다.
+  - 템플릿 표현식에서 사용자 정의 전역에 액세스하는 행위는 하지 말 것.
+
+<hr>
+<br>
