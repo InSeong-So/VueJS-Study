@@ -645,12 +645,12 @@ vm.b = 'hi'
 > 데이터 바인딩의 가장 기본 형태는 “Mustache” 구문(이중 중괄호)을 사용한 텍스트 보간
 
 - Mustache 태그는 해당 데이터 객체의 msg 속성 값으로 대체되며 데이터 객체의 msg 속성이 변경될 때 마다 갱신된다.
-    ```js
+    ```html
     <span>메시지: {{ msg }}</span>
     ```
 
 - v-once 디렉티브를 사용하여 데이터 변경 시 업데이트 되지 않는 일회성 보간을 수행할 수 있으나 같은 노드의 바인딩에도 영향을 미친다.
-  ```js
+  ```html
   <span v-once>다시는 변경하지 않습니다: {{ msg }}</span>
   ```
 
@@ -664,7 +664,7 @@ vm.b = 'hi'
   - Vue는 문자열 기반 템플릿 엔진이 아니기 때문에 v-html을 이용해 템플릿을 사용할 수 없다.
   
   - 따라서 컴포넌트는 UI 재사용 및 구성을 위한 기본 단위로 사용하는 것을 추천한다.
-    ```js
+    ```html
     <p>Using mustaches: {{ rawHtml }}</p>
     <p>Using v-html directive: <span v-html="rawHtml"></span></p>
     ```
@@ -678,12 +678,12 @@ vm.b = 'hi'
 > Mustaches는 HTML 속성에서 사용할 수 없으니 `v-bind 디렉티브`를 사용할 것
 
 - boolean 속성을 사용할 때 단순히 true인 경우 v-bind의 작동
-    ```js
+    ```html
     <div v-bind:id="dynamicId"></div>
     ```
 
 - `isButtonDisabled`가 `null`, `undefined` 또는 `false`의 값을 가지면 `disabled` 속성은 렌더링 된 `<button>엘리먼트`에 포함되지 않는다.
-    ```js
+    ```html
     <button v-bind:disabled="isButtonDisabled">Button</button>
     ```
 
@@ -693,7 +693,7 @@ vm.b = 'hi'
 > Vue.js는 모든 데이터 바인딩 내에서 JavaScript 표현식의 모든 기능을 지원한다.
 
 - 이 표현식은 Vue 인스턴스 데이터 범위 내에서 JavaScript로 계산된다.
-    ```js
+    ```html
     {{ number + 1 }}
 
     {{ ok ? 'YES' : 'NO' }}
@@ -704,7 +704,7 @@ vm.b = 'hi'
     ```
 
     - 단, 각 바인딩에 `하나의 단일 표현식만 포함`되므로 아래처럼 작성하면 안 된다.
-        ```js
+        ```html
         <!-- 아래는 구문이므로 표현식이 아니다. -->
         {{ var a = 1 }}
 
@@ -714,6 +714,93 @@ vm.b = 'hi'
 
 - 템플릿 표현식은 샌드박스 처리되며 Math와 Date 같은 전역으로 사용 가능한 것에만 접근할 수 있다.
   - 템플릿 표현식에서 사용자 정의 전역에 액세스하는 행위는 하지 말 것.
+
+<hr>
+<br>
+
+## 디렉티브
+> `v- 접두사`가 있는 특수 속성
+
+- 디렉티브 속성 값은 `단일 JavaScript 표현식`이 된다.
+  - 단, `v-for`는 예외
+  
+  - 디렉티브의 역할은 표현식의 값이 변경될 때 사이드이펙트를 반응적으로 DOM에 적용하는 것
+    ```html
+    <!-- 
+        seen 이라는 변수가 true라면 <p> 엘리먼트를 삽입
+        false라면 <p> 엘리먼트를 제거
+    --> 
+    <p v-if="seen">you can see me</p>
+    ```
+
+### 전달인자
+- 일부 디렉티브는 콜론으로 표시되는 “전달인자”를 사용할 수 있다.
+
+- `v-bind 디렉티브`는 반응적으로 HTML 속성을 갱신하는데 사용된다.
+  - `href`는 전달인자로, 엘리먼트의 href 속성을 표현식 `url`의 값에 바인드하는 `v-bind` 디렉티브에게 알려준다.
+    ```js
+    <a v-bind:href="url"> ... </a>
+    ```
+
+- DOM 이벤트를 수신하는 v-on 디렉티브
+  - 전달인자는 이벤트를 받을 이름이다.
+    ```js
+    <a v-on:click="doSomething"> ... </a>
+    ```
+
+<br>
+
+### 동적 전달인자
+> 2.6.0+ 에서 추가, 2.6.0버전부터 Javascript 표현식을 대괄호로 묶어 디렉티브의 아규멘트로 사용 가능
+
+```html
+<!-- 동적 전달인자는 제약이 존재 -->
+<a v-bind:[attributeName]="url"> ... </a>
+```
+  - attributeName은 Javascript 형식으로 동적 변환되어, 그 변환결과가 전달인자의 최종적인 값으로 사용
+    - Vue 인스턴스에 "href"라는 값을 가진 attributeName 데이터 속성을 가진 경우, 이 바인딩은 `v-bind:href`와 같음
+
+```html
+<a v-on:[eventName]="doSomething"> ... </a>
+```
+  - 동적인 이벤트명에 핸들러를 바인딩 할 때 동적 전달인자를 활용할 수 있다.
+    - eventName의 값이 "focus" 라고 한다면 v-on:[EventName]은 `v-on:focus`와 같다.
+
+- 동적 전달인자 값의 제약
+  - 동적 전달인자는 `null을 제외하고는 string으로 변환될 것으로 예상`한다.
+  
+  - null은 명시적으로 바인딩을 제거하는데 사용되며 그 외의 경우엔 string이 아닌 값에 대해 경고를 출력한다.
+
+- 동적 전달인자 형식의 제약
+  - 동적 전달인자의 형식에는 문자상의 제약이 있다.
+  
+  - 스페이스와 따옴표같은 몇몇 문자는 HTML의 속성명으로서 적합하지 않은 문자이기 때문이다.
+    ```html
+    <!-- 컴파일러 경고 -->
+    <a v-bind:['foo' + bar]="value"> ... </a>
+    ```
+
+  - 이를 피하는 방법은, 스페이스나 따옴표를 포함하지 않는 형식을 사용하거나, 복잡한 표현식을 계산된 속성(Computed)으로 대체하는 것입니다.
+
+  - in-DOM 탬플릿을 사용할 때에는 *(탬플릿이 HTML파일에 직접 쓰여진 경우)* `브라우저가 모든 속성명을 소문자로 만드는` 관계로 대문자의 사용을 피하는것이 좋다.
+      ```html
+      <!--
+      in-DOM 탬플릿에서는 이 부분이 v-bind:[someattr]로 변환된다.
+      인스턴스에 "someattr" 속성이 없는 경우 이 코드는 동작하지 않는다.
+      -->
+      <a v-bind:[someAttr]="value"> ... </a>
+      ```
+
+<br>
+
+### 수식어
+> 점으로 표시되는 특수 접미사
+> - 디렉티브를 특별한 방법으로 바인딩 해야 함을 나타냄
+
+- .prevent 수식어는 트리거된 이벤트에서 event.preventDefault()를 호출하도록 v-on 디렉티브에게 알려준다.
+  ```html
+  <form v-on:submit.prevent="onSubmit"> ... </form>
+  ```
 
 <hr>
 <br>
