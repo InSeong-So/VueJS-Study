@@ -804,3 +804,41 @@ vm.b = 'hi'
 
 <hr>
 <br>
+
+## 약어
+> `v- 접두사`는 템플릿의 Vue 특정 속성을 식별하기 위한 시각적인 신호 역할 담당
+> - 사용하기에 다소 장황할 수 있어 가장 자주 사용되는 두 개의 디렉티브인 `v-bind`와 `v-on`에 대해 특별한 약어를 제공
+
+- `:`와 `@`는 속성 이름에 유효한 문자이며 Vue.js를 지원하는 모든 브라우저는 올바르게 구문 분석을 할 수 있다.
+  - 최종 렌더링 된 마크업에는 나타나지 않는다.
+  
+  - 약어는 선택사항이다.
+
+### v-bind 약어
+```html
+<!-- 전체 문법 -->
+<a v-bind:href="url"> ... </a>
+
+<!-- 약어 -->
+<a :href="url"> ... </a>
+
+<!-- shorthand with dynamic argument (2.6.0+) -->
+<a :[key]="url"> ... </a>
+```
+
+<br>
+
+### v-on 약어
+```html
+<!-- 전체 문법 -->
+<a v-on:click="doSomething"> ... </a>
+
+<!-- 약어 -->
+<a @click="doSomething"> ... </a>
+
+<!-- shorthand with dynamic argument (2.6.0+) -->
+<a @[event]="doSomething"> ... </a>
+```
+
+<hr>
+<br>
