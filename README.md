@@ -842,3 +842,171 @@ vm.b = 'hi'
 
 <hr>
 <br>
+
+# computed와 watch
+## computed 속성
+> 템플릿 내에 표현식을 넣으면 편리하나 간단한 연산일 때만 이용하는 것이 좋다.
+
+- 템플릿에서의 많은 연산은 코드를 비대하게 하고 유지보수를 어렵게 한다.
+    ```html
+    <!-- message를 역순으로 표시한다는 것을 알려면 코드를 분석해야한다. -->
+    <!-- 이로 인하여, 복잡한 로직이라면 반드시 computed 속성을 사용해야 한다. -->
+    <div id="example">
+    {{ message.split('').reverse().join('') }}
+    </div>
+    ```
+
+### 기본 예제
+- 예제 코드
+    ```html
+    <div id="example">
+    <p>원본 메시지: "{{ message }}"</p>
+    <p>역순으로 표시한 메시지: "{{ reversedMessage }}"</p>
+    </div>
+    ```
+    ```js
+    var vm = new Vue({
+    el: '#example',
+    data: {
+        message: '안녕하세요'
+    },
+    computed: {
+        // 계산된 getter
+        reversedMessage: function () {
+        // `this` 는 vm 인스턴스를 가리킵니다.
+        return this.message.split('').reverse().join('')
+        }
+    }
+    })
+    ```
+    ```
+    원본 메시지: "안녕하세요"
+    역순으로 표시한 메시지: "요세하녕안"
+    ```
+
+- computed 속성인 reversedMessage를 선언하고, 이렇게 작성된 함수는 vm.reversedMessage 속성에 대한 getter 함수로 사용된다.
+    ```js
+    // vm.reversedMessage의 값은 항상 vm.message의 값에 의존한다.
+    console.log(vm.reversedMessage) // => '요세하녕안'
+    vm.message = 'Goodbye'
+    console.log(vm.reversedMessage) // => 'eybdooG'
+    ```
+
+- 일반 속성처럼 computed 속성에도 템플릿에서 데이터 바인딩 할 수 있다.
+  - Vue는 vm.reversedMessage가 vm.message에 의존하는 것을 알고 있으므로 vm.message가 바뀔 때 vm.reversedMessage에 의존하는 바인딩을 모두 업데이트한다.
+  
+  - 가장 중요한 것은 우리가 선언적으로(선언형 프로그래밍 방식에 따라서) 의존 관계를 만들었다는 것이다.
+  
+  - computed 속성의 getter 함수는 사이드 이펙트가 없어 코드를 테스트하거나 이해하기 쉽다.
+
+<br>
+
+### computed 속성의 캐싱 vs 메소드
+> 표현식에서 메소드를 호출하여 같은 결과를 얻을 수 있다.
+
+- computed 속성 대신 메소드와 같은 함수를 정의할 수도 있다.
+  - 최종 결과에 대해 두 가지 접근 방식은 서로 동일하다. 차이점은 computed 속성은 종속 대상을 따라 저장(캐싱)된다는 것.
+  
+  - computed 속성은 해당 속성이 종속된 대상이 변경될 때만 함수를 실행한다.
+  
+  - 즉 message가 변경되지 않는 한, computed 속성인 reversedMessage를 여러 번 요청해도 계산을 다시 하지 않고 계산되어 있던 결과를 즉시 반환한다.
+    ```html
+    <p>뒤집힌 메시지: "{{ reversedMessage() }}"</p>
+    ```
+    ```js
+    // 컴포넌트 내부
+    methods: {
+        reversedMessage: function () {
+            return this.message.split('').reverse().join('')
+        }
+    }
+    ```
+
+  - Date.now()처럼 아무 곳에도 의존하지 않는 computed 속성의 경우 절대로 업데이트되지 않는다는 뜻이다.
+    ```js
+    computed: {
+        now: function () {
+            return Date.now()
+        }
+    }
+    ```
+
+- 단, 메소드를 호출하면 렌더링을 다시 할 때마다 항상 함수를 실행한다.
+
+- 캐싱을 하지 않으면 정의한 computed 속성의 getter 함수를 꼭 필요한 것보다 더 많이 실행하게 되므로, 캐싱을 원하지 않는 경우 메소드를 사용하라.
+
+<br>
+
+### computed 속성 vs watch 속성
+> Vue는 Vue 인스턴스의 데이터 변경을 관찰하고 이에 반응하는 보다 일반적인 watch 속성을 제공한다.
+
+- 명령적인 watch 콜백보다 계산된 속성을 사용하는 것이 더 좋다.
+  - watch 속성은 감시할 데이터를 지정하고 그 데이터가 바뀌면 이런 함수를 실행하라는 방식으로 소프트웨어 공학에서 이야기하는 ‘명령형 프로그래밍’ 방식이다.
+  - computed 속성은 계산해야 하는 목표 데이터를 정의하는 방식으로 소프트웨어 공학에서 이야기하는 ‘선언형 프로그래밍’ 방식이다.
+    ```html
+    <div id="demo">{{ fullName }}</div>
+    ```
+    ```js
+    // 이 코드는 명령형이며 코드를 반복한다. 아래의 computed 속성을 사용하는 방식과 비교해 볼 것
+    var vm = new Vue({
+        el: '#demo',
+        data: {
+            firstName: 'Foo',
+            lastName: 'Bar',
+            fullName: 'Foo Bar'
+        },
+        watch: {
+            firstName: function (val) {
+                this.fullName = val + ' ' + this.lastName
+            },
+            lastName: function (val) {
+                this.fullName = this.firstName + ' ' + val
+            }
+        }
+    })
+    ```
+
+    ```js
+    // 일반적으로 선언형 프로그래밍이 명령형 프로그래밍보다 코드 반복이 적은 등 우수하다고 평가하는 경향이 존재
+    var vm = new Vue({
+        el: '#demo',
+        data: {
+            firstName: 'Foo',
+            lastName: 'Bar'
+        },
+        computed: {
+            fullName: function () {
+                return this.firstName + ' ' + this.lastName
+            }
+        }
+    })
+    ```
+
+<br>
+
+### computed 속성의 setter 함수
+> computed 속성은 기본적으로 getter 함수만 가지고 있지만, 필요한 경우 setter 함수를 만들어 쓸 수 있다.
+
+- 예제
+    ```js
+    // ...
+    computed: {
+        fullName: {
+            // getter
+            get: function () {
+                return this.firstName + ' ' + this.lastName
+            },
+            // setter
+            set: function (newValue) {
+                var names = newValue.split(' ')
+                this.firstName = names[0]
+                this.lastName = names[names.length - 1]
+            }
+        }
+    }
+    // ...
+    // 이제 vm.fullName = 'John Doe'를 실행하면 설정자가 호출되고 vm.firstName과 vm.lastName이 그에 따라 업데이트 된다.
+    ```
+
+<hr>
+<br>
