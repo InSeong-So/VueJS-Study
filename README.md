@@ -1218,13 +1218,70 @@ vm.b = 'hi'
     ```
 
 - 클래스 바인딩도 동일하다.
-```html
-<my-component v-bind:class="{ active: isActive }"></my-component>
-```
+  ```html
+  <my-component v-bind:class="{ active: isActive }"></my-component>
+  ```
 
   - isActive가 참일 때 렌더링 된 HTML
   ```html
   <p class="foo bar active">Hi</p>
+  ```
+
+<hr>
+<br>
+
+## 인라인 스타일 바인딩
+### 객체 구문
+> v-bind:style 객체 구문은 매우 직설적이며 거의 CSS 처럼 보이지만 JavaScript 객체이다.
+> - 속성 이름에 camelCase와 kebab-case (따옴표를 함께 사용해야 합니다)를 사용할 수 있다.
+
+- 스타일 객체에 직접 바인딩 하여 템플릿이 더 간결하도록 만드는 것이 좋다.
+  ```html
+  <div v-bind:style="{ color: activeColor, fontSize: fontSize + 'px' }"></div>
+  ```
+  ```js
+  data: {
+    activeColor: 'red',
+    fontSize: 30
+  }
+  ```
+
+- 객체 구문은 종종 객체를 반환하는 계산된 속성과 함께 사용한다.
+  ```html
+  <div v-bind:style="styleObject"></div>
+  ```
+  ```js
+  data: {
+    styleObject: {
+      color: 'red',
+      fontSize: '13px'
+    }
+  }
+  ```
+
+<br>
+
+### 배열 구문
+> v-bind:style에 대한 배열 구문은 같은 스타일의 엘리먼트에 여러 개의 스타일 객체를 사용할 수 있게 한다.
+
+```html
+<div v-bind:style="[baseStyles, overridingStyles]"></div>
+```
+
+<br>
+
+### 자동 접두사
+> v-bind:style 에 브라우저 벤더 접두어가 필요한 CSS 속성 (예: transform)을 사용하면 Vue는 자동으로 해당 접두어를 감지하여 스타일을 적용한다.
+
+<br>
+
+### 다중 값 제공
+> 2.3.0+버전부터 스타일 속성에 접두사가 있는 여러 값을 배열로 전달할 수 있다.
+
+- 브라우저가 지원하는 배열의 마지막 값만 렌더링한다.
+  ```html
+  <!-- flexbox의 접두어가 붙지않은 버전을 지원하는 브라우저에 대해 display : flex를 렌더링 -->
+  <div v-bind:style="{ display: ['-webkit-box', '-ms-flexbox', 'flex'] }"></div>
   ```
 
 <hr>
