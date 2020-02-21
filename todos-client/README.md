@@ -1,6 +1,7 @@
 # todos-client
 
 > A Vue.js project
+> - vuejs을 통한 todolist 구현, 데이터베이스는 개인 라즈베리파이 또는 aws 서버에 구현 할 것
 
 ## Build Setup
 
