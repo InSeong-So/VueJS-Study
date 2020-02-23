@@ -1,7 +1,7 @@
 <template>
-  <div class="card">
-    <div class="card-header">Panel heading without title</div>
-    <div class="card-body">
+  <div class="panel panel-default">
+    <div class="panel-heading">Panel heading without title</div>
+    <div class="panel-body">
       Panel content
     </div>
   </div>

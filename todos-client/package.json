@@ -2,7 +2,7 @@
   "name": "todos-client",
   "version": "1.0.0",
   "description": "A Vue.js project",
-  "author": "InSeong-So <goflvhxj2547@gmail.com>",
+  "author": "sisparang <goflvhxj2547@gmail.com>",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
