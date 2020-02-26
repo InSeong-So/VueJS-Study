@@ -41,5 +41,5 @@ npm run build
 npm run build --report
 
 # Restful API를 위한 AXIOS 설치
-npom install axios --save-dev
+npm install axios --save-dev
 ```
