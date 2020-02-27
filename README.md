@@ -1481,3 +1481,45 @@ var example1 = new Vue({
 
 <hr>
 <br>
+
+## v-for와 객체
+- v-for를 사용하여 객체의 속성을 반복하기
+  ```html
+  <ul id="v-for-object" class="demo">
+    <li v-for="value in object">
+      {{ value }}
+    </li>
+  </ul>
+  ```
+  ```js
+  new Vue({
+    el: '#v-for-object',
+    data: {
+      object: {
+        title: 'How to do lists in Vue',
+        author: 'Jane Doe',
+        publishedAt: '2016-04-10'
+      }
+    }
+  })
+  ```
+
+- 키에 대한 두번째 전달 인자를 제공할 수 있다.
+  ```html
+  <div v-for="(value, name) in object">
+    {{ name }}: {{ value }}
+  </div>
+  ```
+
+- 인덱스를 제공할 수 있다.
+  ```html
+  <div v-for="(value, name, index) in object">
+    {{ index }}. {{ name }}: {{ value }}
+  </div>
+  ```
+
+- 객체를 반복할 때 순서는 Object.keys()의 키 나열 순서에 따라 결정된다.
+  - 이 순서는 JavaScript 엔진 구현간에 일관적이지 않다.
+
+<hr>
+<br>
