@@ -1546,3 +1546,139 @@ var example1 = new Vue({
 
 <hr>
 <br>
+
+## 배열 변경 감지
+### 변이 메소드
+> 감시 중인 배열의 변이 메소드를 래핑하여 뷰 갱신을 트리거한다.
+
+- 래핑된 메소드
+  - push()
+  - pop()
+  - shift()
+  - unshift()
+  - splice()
+  - sort()
+  - reverse()
+
+<br>
+
+### 배열 대체
+> 변이 메소드는 호출된 원본 배열을 변형하나 대체를 통해 변형을 하지 않는 방법
+> - 변형이 없는 방법으로 작업할 때 이전 배열을 새 배열로 바꿀 수 있다.
+
+- 항상 새 배열로 반환하는 메소드
+  - filter()
+  - concat()
+  - slice()
+
+- Vue는 DOM 요소 재사용을 극대화하기 위해 배열을 겹치는 객체가 포함된 다른 배열로 대체한다.
+  ```js
+  vm.items = vm.items.filter(function(item){
+    return item.message.match(/Foo/)
+  })
+  ```
+
+<br>
+
+### 주의사항
+> Javascript의 제한으로 배열에 대한 몇몇 변경 사항을 감지할 수 없다.
+
+- 변경 사항을 감지할 수 없음
+  - 인덱스로 배열에 있는 항목을 직접 설정하는 경우
+    ```js
+    vm.items[indexOfItem] = newValue
+    ```
+
+  - 배열 길이를 수정하는 경우
+    ```js
+    vm.items.length = newLegth
+    ```
+
+  - 따라서
+    ```js
+    var vm = new Vue({
+      data: {
+        items: ['a','b','c']
+      }
+    })
+
+    vm.items[1] = 'x' // reactive하지 않음
+    vm.items.length = // reactive하지 않음
+    ```
+
+- 변경 사항을 감지할 수 있음
+  - 인덱스로 배열에 있는 항목을 직접 설정하는 경우
+    ```js
+    // Vue.set
+    Vue.set(vm.items, indexOfTime, newValue)
+
+    // Array.prototype.splice
+    vm.items.splice(indexOfItem, 1, newValue)
+
+    // vm.$set (the global Vue.set)
+    vm.$set(vm.items, indexOfItem, newValue)
+    ```
+  
+  - 배열 길이를 수정하는 경우
+    ```js
+    vm.items.splice(newLength)
+    ```
+
+<hr>
+<br>
+
+## 객체 변경 감지에 관한 주의사항
+> 모던 Javascript의 한계로 인해 Vue는 속성 추가 및 삭제를 감지하지 못한다.
+
+```js
+var vm = new Vue({
+  data: {
+    a: 1
+  }
+})
+// vm.a는 반응형이다.
+
+vm.b = 2
+// vm.b는 반응형이 아니다.
+```
+
+- Vue는 이미 만들어진 인스턴스에 새로운 루트레벨의 반응형 속성을 동적으로 추가하는 것을 허용하지 않는다.
+  - 그러나 Vue.set(Object, propertyName, value) 메소드를 사용하여 중첩된 객체에 반응형 속성을 추가할 수 있다.
+    ```js
+    var vm = new Vue({
+      data: {
+        userProfile: {
+          name: 'Anika'
+        }
+      }
+    })
+    ```
+
+  - 중첩된 userProfile 객체에 새로운 속성 age를 추가
+    ```js
+    Vue.set(vm.userProfile, 'age', 27)
+    ```
+  - 인스턴스 메소드 vm.$set을 사용할 수 있다. *(vm.$set은 Vue.set의 별칭)*
+    ```js
+    vm.$set(vm.userProfile, 'age', 27)
+    ```
+  
+  - 때로는 Object.assign()이나 _.extend()를 사용해 기존 객체에 새 속성을 할당할 수 있다.
+    - 이 경우, 두 객체의 속성을 사용해 새 객체를 만들어야 한다.
+      ```js
+      Object.assign(vm.userProfile, {
+        age: 27,
+        favoriteColor: 'Vue Green'
+      })
+      ```
+    
+    - 새로운 반응형 속성은 아래와 같이 추가한다.
+      ```js
+      vm.userProfile = Object.assign({}, vm.userProfile, {
+        age: 27,
+        favoriteColor: 'Vue Green'
+      })
+      ```
+
+<hr>
+<br>
