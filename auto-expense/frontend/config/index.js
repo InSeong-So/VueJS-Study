@@ -20,7 +20,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */
@@ -38,10 +38,12 @@ module.exports = {
 
   build: {
     // Template for index.html
-    index: path.resolve(__dirname, '../dist/index.html'),
+    // index: path.resolve(__dirname, '../dist/index.html'),
+    index: path.resolve(__dirname, '../../backend/public/index.html'),  // 수정
 
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist'),
+    // assetsRoot: path.resolve(__dirname, '../dist'),
+    assetsRoot: path.resolve(__dirname, '../../backend/public'),   // 수정
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
 

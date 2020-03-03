@@ -255,9 +255,12 @@
       }
     },
     created: function() {
-      this.$http.get('/api/expense')
-        .then((response) => {
-          this.expense = response.data
+      let vm = this;
+      this.$http.get('http://localhost:3000/api/expense')
+        .then((result) => {
+          console.log(result)
+          vm.username = result.data.username;
+          vm.grades = result.data.grades;
         })
     }
   }
