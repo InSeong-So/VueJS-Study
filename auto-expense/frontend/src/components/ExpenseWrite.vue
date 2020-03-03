@@ -20,7 +20,7 @@
             <label for="grades">직급</label>
             <form>
               <select class="custom-select" id="grades" v-model="grades">
-                <option v-for="grade in grades" v-bind:value="grades.value">
+                <option v-for="grade in grades">
                   {{ grade.text }}
                 </option>
               </select>
@@ -30,7 +30,7 @@
             <label for="projects">투입 프로젝트</label>
             <form>
               <select class="custom-select" id="projects" v-model="projects">
-                <option v-for="project in projects" v-bind:value="projects.value">
+                <option v-for="project in projects">
                   {{ project.text }}
                 </option>
               </select>
@@ -74,7 +74,7 @@
                     <div class="col-md-4">
                       <label for="dates">날짜</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="dates" v-model="dates" placeholder="MMDD">
+                        <input type="text" class="form-control" id="dates" v-model="useDetails.dates" placeholder="MMDD">
                         <div class="input-group-append">
                           <span class="input-group-text">@</span>
                         </div>
@@ -83,8 +83,8 @@
                     <div class="col-md-4">
                       <label for="codes">코드</label>
                       <form>
-                        <select name="codes" id="codes" v-model="codes" class="custom-select">
-                          <option v-for="code in codes" v-bind:value="codes.value">
+                        <select name="codes" id="codes" v-model="useDetails.codes" class="custom-select">
+                          <option v-for="code in codes">
                             {{ code.text }}
                           </option>
                         </select>
@@ -93,7 +93,7 @@
                     <div class="col-md-4">
                       <label for="amount">금액</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="amount" v-model="amount" placeholder="Amount">
+                        <input type="text" class="form-control" id="amount" v-model="useDetails.amount" placeholder="Amount">
                         <div class="input-group-append">
                           <span class="input-group-text">원</span>
                         </div>
@@ -105,7 +105,7 @@
                     <div class="col-md-12">
                       <label for="description">사용내역</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="description" v-model="description"
+                        <input type="text" class="form-control" id="description" v-model="useDetails.description"
                                placeholder="Description">
                       </div>
                     </div>
@@ -115,7 +115,7 @@
                     <div class="col-md-12">
                       <label for="comment">비고</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="comment" v-model="comment" placeholder="Comment">
+                        <input type="text" class="form-control" id="comment" v-model="useDetails.comment" placeholder="Comment">
                       </div>
                     </div>
                   </div>
@@ -231,36 +231,47 @@
         projects: [
           // {text:'SKCNC', value: '20191216'}
         ],
-        dates: '',
-        codes: [
-          // {text:'OTMEAL', value: '1'}
+        useDetails:[
+
         ],
-        description: '',
-        amount: '',
-        comment: '',
+        // dates: '',
+        // codes: [
+        //   {text:'OTMEAL', value: '1'}
+        // ],
+        // description: '',
+        // amount: '',
+        // comment: '',
         submitted: '',
         reviewed: '',
         approved: '',
       }
     },
     methods: {
-      userCheck: function(username){
-
+      userCheck: function (username) {
+        let vm = this;
       },
       addDescription: function (description) {
-
+        let vm = this;
       },
       submitExpense: function () {
-        let vm = this
+        let vm = this;
       }
     },
-    created: function() {
+    created: function () {
       let vm = this;
-      this.$http.get('http://localhost:3000/api/expense')
+      this.$http.get('/api/expense')
         .then((result) => {
-          console.log(result)
-          vm.username = result.data.username;
-          vm.grades = result.data.grades;
+          vm.username = result.data.data.username;
+          vm.grades = result.data.data.grades;
+          vm.projects = result.data.data.projects;
+          vm.dates = result.data.data.dates;
+          vm.codes = result.data.data.codes;
+          vm.description = result.data.data.description;
+          vm.amount = result.data.data.amount;
+          vm.comment = result.data.data.comment;
+          vm.submitted = result.data.data.submitted;
+          vm.reviewed = result.data.data.reviewed;
+          vm.approved = result.data.data.approved;
         })
     }
   }
