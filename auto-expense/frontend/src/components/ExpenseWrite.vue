@@ -84,7 +84,7 @@
                       <label for="codes">코드</label>
                       <form>
                         <select name="codes" id="codes" v-model="useDetails.codes" class="custom-select">
-                          <option v-for="code in codes">
+                          <option v-for="code in useDetails.codes">
                             {{ code.text }}
                           </option>
                         </select>
@@ -150,29 +150,12 @@
               </tr>
               </thead>
               <tbody>
-              <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-                <td>john@example.com</td>
-              </tr>
-              <tr>
-                <td>Mary</td>
-                <td>Moe</td>
-                <td>mary@example.com</td>
-                <td>mary@example.com</td>
-                <td>mary@example.com</td>
-                <td>mary@example.com</td>
-              </tr>
-              <tr>
-                <td>July</td>
-                <td>Dooley</td>
-                <td>july@example.com</td>
-                <td>july@example.com</td>
-                <td>july@example.com</td>
-                <td>july@example.com</td>
+              <tr v-for="useDetail in useDetails" v-if="useDetails != null">
+                <td>{{useDetail.dates}}</td>
+                <td>{{useDetail.codes}}</td>
+                <td>{{useDetail.description}}</td>
+                <td>{{useDetail.amount}}</td>
+                <td>{{useDetail.comment}}</td>
               </tr>
               </tbody>
             </table>
@@ -259,7 +242,7 @@
     },
     created: function () {
       let vm = this;
-      this.$http.get('/api/expense')
+      this.$http.get('http://localhost:8226/api/expense')
         .then((result) => {
           vm.username = result.data.data.username;
           vm.grades = result.data.data.grades;
