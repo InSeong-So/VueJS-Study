@@ -19,9 +19,9 @@
           <div class="col-md-4 mb-3">
             <label for="grades">직급</label>
             <form>
-              <select class="custom-select" id="grades" v-model="grades">
-                <option v-for="grade in grades">
-                  {{ grade.text }}
+              <select class="custom-select" id="grades" v-model="combo.grades">
+                <option v-for="grade in combo.grades">
+                  {{ grade }}
                 </option>
               </select>
             </form>
@@ -29,9 +29,9 @@
           <div class="col-md-4 mb-3">
             <label for="projects">투입 프로젝트</label>
             <form>
-              <select class="custom-select" id="projects" v-model="projects">
-                <option v-for="project in projects">
-                  {{ project.text }}
+              <select class="custom-select" id="projects" v-model="combo.projects">
+                <option v-for="project in combo.projects">
+                  {{ project }}
                 </option>
               </select>
             </form>
@@ -74,7 +74,8 @@
                     <div class="col-md-4">
                       <label for="dates">날짜</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="dates" v-model="useDetails.dates" placeholder="MMDD">
+                        <input type="text" class="form-control" id="dates" v-model="userDetails.dates"
+                               placeholder="MMDD">
                         <div class="input-group-append">
                           <span class="input-group-text">@</span>
                         </div>
@@ -83,9 +84,9 @@
                     <div class="col-md-4">
                       <label for="codes">코드</label>
                       <form>
-                        <select name="codes" id="codes" v-model="useDetails.codes" class="custom-select">
-                          <option v-for="code in useDetails.codes">
-                            {{ code.text }}
+                        <select name="codes" id="codes" v-model="combo.codes" class="custom-select">
+                          <option v-for="code in combo.codes">
+                            {{ code }}
                           </option>
                         </select>
                       </form>
@@ -93,7 +94,8 @@
                     <div class="col-md-4">
                       <label for="amount">금액</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="amount" v-model="useDetails.amount" placeholder="Amount">
+                        <input type="text" class="form-control" id="amount" v-model="userDetails.amount"
+                               placeholder="Amount">
                         <div class="input-group-append">
                           <span class="input-group-text">원</span>
                         </div>
@@ -105,7 +107,7 @@
                     <div class="col-md-12">
                       <label for="description">사용내역</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="description" v-model="useDetails.description"
+                        <input type="text" class="form-control" id="description" v-model="userDetails.description"
                                placeholder="Description">
                       </div>
                     </div>
@@ -115,7 +117,8 @@
                     <div class="col-md-12">
                       <label for="comment">비고</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="comment" v-model="useDetails.comment" placeholder="Comment">
+                        <input type="text" class="form-control" id="comment" v-model="userDetails.comment"
+                               placeholder="Comment">
                       </div>
                     </div>
                   </div>
@@ -150,12 +153,12 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="useDetail in useDetails" v-if="useDetails != null">
-                <td>{{useDetail.dates}}</td>
-                <td>{{useDetail.codes}}</td>
-                <td>{{useDetail.description}}</td>
-                <td>{{useDetail.amount}}</td>
-                <td>{{useDetail.comment}}</td>
+              <tr v-for="userDetail in userDetails" v-if="userDetails != null">
+                <td>{{userDetail.dates}}</td>
+                <td>{{userDetail.codes}}</td>
+                <td>{{userDetail.description}}</td>
+                <td>{{userDetail.amount}}</td>
+                <td>{{userDetail.comment}}</td>
               </tr>
               </tbody>
             </table>
@@ -204,32 +207,35 @@
 <script>
   export default {
     name: 'ExpenseWrite',
-    data() {
+    data: function() {
       return {
         msg: '',
         username: '',
-        grades: [
-          // {text:'컨설턴트', value: '1'}
-        ],
-        projects: [
-          // {text:'SKCNC', value: '20191216'}
-        ],
-        useDetails:[
+        combo: [
 
         ],
-        // dates: '',
-        // codes: [
-        //   {text:'OTMEAL', value: '1'}
-        // ],
-        // description: '',
-        // amount: '',
-        // comment: '',
+        userDetails: [],
+        dates: '',
+        description: '',
+        amount: '',
+        comment: '',
         submitted: '',
         reviewed: '',
         approved: '',
       }
     },
     methods: {
+      vue_init: function () {
+        let vm = this;
+        this.$http.get('http://localhost:8226/api/dbs')
+          .then((result) => {
+            console.log("// created()");
+            vm.$set(vm.combo, 'grades', result.data.grades_txt);
+            vm.$set(vm.combo, 'projects', result.data.projects_txt);
+            vm.$set(vm.combo, 'codes', result.data.codes_txt);
+            console.log("created() //");
+          });
+      },
       userCheck: function (username) {
         let vm = this;
       },
@@ -240,22 +246,11 @@
         let vm = this;
       }
     },
-    created: function () {
-      let vm = this;
-      this.$http.get('http://localhost:8226/api/expense')
-        .then((result) => {
-          vm.username = result.data.data.username;
-          vm.grades = result.data.data.grades;
-          vm.projects = result.data.data.projects;
-          vm.dates = result.data.data.dates;
-          vm.codes = result.data.data.codes;
-          vm.description = result.data.data.description;
-          vm.amount = result.data.data.amount;
-          vm.comment = result.data.data.comment;
-          vm.submitted = result.data.data.submitted;
-          vm.reviewed = result.data.data.reviewed;
-          vm.approved = result.data.data.approved;
-        })
+    mounted() {
+      this.vue_init();
+    },
+    destroyed() {
+      console.log(this.combo);
     }
   }
 </script>
