@@ -14,13 +14,13 @@
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="username">이름</label>
-            <input type="text" class="form-control" id="username" v-model="username" @change="userCheck(username)">
+            <input type="text" class="form-control" id="username" v-model="username" @blur="userCheck($event)">
           </div>
           <div class="col-md-4 mb-3">
             <label for="grades">직급</label>
             <form>
-              <select class="custom-select" id="grades" v-model="combo.grades">
-                <option v-for="grade in combo.grades">
+              <select class="custom-select" id="grades" v-model="gradesSelected">
+                <option v-for="grade in combo.grades" :value="grade">
                   {{ grade }}
                 </option>
               </select>
@@ -29,8 +29,8 @@
           <div class="col-md-4 mb-3">
             <label for="projects">투입 프로젝트</label>
             <form>
-              <select class="custom-select" id="projects" v-model="combo.projects">
-                <option v-for="project in combo.projects">
+              <select class="custom-select" id="projects" v-model="projectsSelected">
+                <option v-for="project in combo.projects" :value="project">
                   {{ project }}
                 </option>
               </select>
@@ -84,8 +84,8 @@
                     <div class="col-md-4">
                       <label for="codes">코드</label>
                       <form>
-                        <select name="codes" id="codes" v-model="combo.codes" class="custom-select">
-                          <option v-for="code in combo.codes">
+                        <select name="codes" id="codes" v-model="codesSelected" class="custom-select">
+                          <option v-for="code in combo.codes" :value="code">
                             {{ code }}
                           </option>
                         </select>
@@ -207,14 +207,17 @@
 <script>
   export default {
     name: 'ExpenseWrite',
-    data: function() {
+    data: function () {
       return {
         msg: '',
         username: '',
-        combo: [
-
-        ],
+        thisuserdata: [],
+        combo: [],
+        gradesSelected: "선택해주세요.",
+        projectsSelected: "선택해주세요.",
+        codesSelected: "선택해주세요.",
         userDetails: [],
+        data_config: [],
         dates: '',
         description: '',
         amount: '',
@@ -226,31 +229,49 @@
     },
     methods: {
       vue_init: function () {
-        let vm = this;
-        this.$http.get('http://localhost:8226/api/dbs')
-          .then((result) => {
-            console.log("// created()");
-            vm.$set(vm.combo, 'grades', result.data.grades_txt);
-            vm.$set(vm.combo, 'projects', result.data.projects_txt);
-            vm.$set(vm.combo, 'codes', result.data.codes_txt);
-            console.log("created() //");
-          });
       },
-      userCheck: function (username) {
+      userCheck: function ($event) {
         let vm = this;
+        this.username = $event.target.value;
+        if (this.username !== null) {
+          this.$http.get('http://localhost:8226/api/userCheck')
+            .then((result) => {
+              console.log("// userCheck()");
+              vm.$set(vm.thisuserdata, result.data);
+              console.log(vm.thisuserdata);
+              console.log("userCheck() //");
+            });
+        }
       },
       addDescription: function (description) {
-        let vm = this;
       },
       submitExpense: function () {
-        let vm = this;
       }
     },
-    mounted() {
-      this.vue_init();
+    beforeCreate() {
+
     },
-    destroyed() {
-      console.log(this.combo);
+    created() {
+      let vm = this;
+      this.$http.get('http://localhost:8226/api/dbs')
+        .then((result) => {
+          console.log("// created()");
+          vm.$set(vm.combo, 'grades', result.data.grades_txt);
+          vm.$set(vm.combo, 'projects', result.data.projects_txt);
+          vm.$set(vm.combo, 'codes', result.data.codes_txt);
+          // vm.$set(vm.combo, 'grades_txt', result.data.grades_txt);
+          // vm.$set(vm.combo, 'projects_txt', result.data.projects_txt);
+          // vm.$set(vm.combo, 'codes_txt', result.data.codes_txt);
+          // vm.$set(vm.combo, 'grades_comment', result.data.grades_comment);
+          // vm.$set(vm.combo, 'projects_comment', result.data.projects_comment);
+          // vm.$set(vm.combo, 'codes_comment', result.data.codes_comment);
+          for (let i in result.data.data_config) {
+            vm.$set(vm.data_config, i, result.data.data_config[i]);
+          }
+          console.log("created() //");
+        });
+    },
+    mounted() {
     }
   }
 </script>

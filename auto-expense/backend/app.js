@@ -7,6 +7,7 @@ const cors = require('cors');
 const mysql = require('mysql');
 
 const db_config = require('./src/db/config');
+const data_config = require('./src/data/date');
 const connection = mysql.createConnection(db_config);
 
 const app = express();
@@ -25,40 +26,71 @@ let combo = {
     projects_txt: [],
     projects_comment: [],
     codes_txt: [],
-    codes_comment: []
+    codes_comment: [],
+    data_config: []
 }
 
-app.route('/').get((req, res) => {
-    res.sendFile(path.join(__dirname, '../public', 'index.html'));
-});
+const query1 =
+    "SELECT T1.*\n" +
+    "  FROM EXPENSE_MASTER T1, EXPENSE_DETAILS T2\n" +
+    " WHERE 1=1\n" +
+    "   AND T1.USERNAME = ?\n" +
+    "   AND T1.USERDETAILS = ?\n" +
+    "   AND T2.USERNAME = T1.USERNAME\n" +
+    "   AND T2.USERDETAILS = T1.USERDETAILS"
+const query2 =
+    "  SELECT T2.*\n" +
+    "    FROM EXPENSE_MASTER T1, EXPENSE_DETAILS T2\n" +
+    "   WHERE 1=1\n" +
+    "     AND T1.USERNAME = ?\n" +
+    "     AND T1.USERDETAILS = ?\n" +
+    "     AND T2.USERNAME = T1.USERNAME\n" +
+    "     AND T2.USERDETAILS = T1.USERDETAILS\n" +
+    "ORDER BY DATES ASC"
+
+app.route('/')
+    .get((req, res) => {
+        res.sendFile(path.join(__dirname, '../public', 'index.html'));
+    });
 
 app.route('/api/dbs')
     .get(async (req, res) => {
         try {
-            console.log("진입")
-            connection.query('SELECT * FROM EXPENSE_COMBO', (err, rows, field) => {
+            connection.query('SELECT * FROM EXPENSE_COMBO', (err, rows) => {
                 for (let i in rows) {
                     if (rows[i].GUBUN == 'grades') {
                         combo.grades_txt.push(rows[i]['TXT_VAL']);
-                        // combo.grades_comment.push(rows[i]['TXT_COMMENT']);
+                        combo.grades_comment.push(rows[i]['TXT_COMMENT']);
                     }
                     if (rows[i].GUBUN == 'projects') {
                         combo.projects_txt.push(rows[i]['TXT_VAL']);
-                        // combo.projects_comment.push(rows[i]['TXT_COMMENT']);
+                        combo.projects_comment.push(rows[i]['TXT_COMMENT']);
                     }
                     if (rows[i].GUBUN == 'codes') {
                         combo.codes_txt.push(rows[i]['TXT_VAL']);
-                        // combo.codes_comment.push(rows[i]['TXT_COMMENT']);
+                        combo.codes_comment.push(rows[i]['TXT_COMMENT']);
                     }
                 }
+                combo.data_config.push(data_config);
+                console.log(combo.data_config);
                 res.json(combo);
             });
         } catch (err) {
             res.send(err);
         } finally {
-            console.log("종료")
             connection.end();
         }
+    });
+
+app.route('/api/userCheck')
+    .get((req, res) => {
+        connection.query(query1, req.params.username, (err, rows) => {
+            if (err) {
+                res.send(err);
+            }
+            res.json(rows)
+        });
+        connection.end();
     });
 
 app.route('/api/expense')
