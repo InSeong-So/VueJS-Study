@@ -11,6 +11,14 @@
     </div>
     <div class="col-md-10" style="float: none;margin: 0 auto;">
       <form class="needs-validation" onsubmit="return false;">
+        <hr class="mb-4">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="load_info">
+          <label class="custom-control-label" for="load_info">정보 가져오기</label>
+          <input type="checkbox" class="custom-control-input" id="what_month">
+          <label class="custom-control-label" for="what_month">정보 가져오기</label>
+        </div>
+        <hr class="mb-4">
         <div class="row">
           <div class="col-md-4 mb-3">
             <label for="username">이름</label>
@@ -18,23 +26,19 @@
           </div>
           <div class="col-md-4 mb-3">
             <label for="grades">직급</label>
-            <form>
               <select class="custom-select" id="grades" v-model="gradesSelected">
                 <option v-for="grade in combo.grades" :value="grade">
                   {{ grade }}
                 </option>
               </select>
-            </form>
           </div>
           <div class="col-md-4 mb-3">
             <label for="projects">투입 프로젝트</label>
-            <form>
               <select class="custom-select" id="projects" v-model="projectsSelected">
                 <option v-for="project in combo.projects" :value="project">
                   {{ project }}
                 </option>
               </select>
-            </form>
           </div>
         </div>
 
@@ -83,13 +87,11 @@
                     </div>
                     <div class="col-md-4">
                       <label for="codes">코드</label>
-                      <form>
                         <select name="codes" id="codes" v-model="codesSelected" class="custom-select">
                           <option v-for="code in combo.codes" :value="code">
                             {{ code }}
                           </option>
                         </select>
-                      </form>
                     </div>
                     <div class="col-md-4">
                       <label for="amount">금액</label>
@@ -137,9 +139,9 @@
           </div>
         </div>
 
-        <hr class="mt-1">
+        <hr class="mt-1" v-show="userDetails.length > 0">
 
-        <div class="row">
+        <div class="row" v-show="userDetails.length > 0">
           <div class="container">
             <table class="table table-dark table-striped">
               <thead>
@@ -153,7 +155,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr v-for="userDetail in userDetails" v-if="userDetails != null">
+              <tr v-for="userDetail in userDetails">
                 <td>{{userDetail.dates}}</td>
                 <td>{{userDetail.codes}}</td>
                 <td>{{userDetail.description}}</td>
@@ -190,8 +192,8 @@
 
         <hr class="mb-4">
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="save-info">
-          <label class="custom-control-label" for="save-info">Save this information for next time</label>
+          <input type="checkbox" class="custom-control-input" id="save_info">
+          <label class="custom-control-label" for="save_info">작성자 정보를 저장하여 다음에도 사용하기</label>
         </div>
         <hr class="mb-4">
 
@@ -211,7 +213,7 @@
       return {
         msg: '',
         username: '',
-        thisuserdata: [],
+        userData: [],
         combo: [],
         gradesSelected: "선택해주세요.",
         projectsSelected: "선택해주세요.",
@@ -237,8 +239,13 @@
           this.$http.get('http://localhost:8226/api/userCheck')
             .then((result) => {
               console.log("// userCheck()");
-              vm.$set(vm.thisuserdata, result.data);
-              console.log(vm.thisuserdata);
+              if(result.data === null || result.data === undefined){
+                alert("데이터가 없어 새로 작성합니다.");
+              }else{
+                vm.$set(vm.userData, result.data);
+                console.log(vm.userData);
+                // vm.$set(vm.gradesSelected, vm.userData.);
+              }
               console.log("userCheck() //");
             });
         }
@@ -259,12 +266,6 @@
           vm.$set(vm.combo, 'grades', result.data.grades_txt);
           vm.$set(vm.combo, 'projects', result.data.projects_txt);
           vm.$set(vm.combo, 'codes', result.data.codes_txt);
-          // vm.$set(vm.combo, 'grades_txt', result.data.grades_txt);
-          // vm.$set(vm.combo, 'projects_txt', result.data.projects_txt);
-          // vm.$set(vm.combo, 'codes_txt', result.data.codes_txt);
-          // vm.$set(vm.combo, 'grades_comment', result.data.grades_comment);
-          // vm.$set(vm.combo, 'projects_comment', result.data.projects_comment);
-          // vm.$set(vm.combo, 'codes_comment', result.data.codes_comment);
           for (let i in result.data.data_config) {
             vm.$set(vm.data_config, i, result.data.data_config[i]);
           }
@@ -272,6 +273,7 @@
         });
     },
     mounted() {
+      let vm = this;
     }
   }
 </script>

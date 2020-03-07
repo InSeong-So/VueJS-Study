@@ -77,20 +77,19 @@ app.route('/api/dbs')
             });
         } catch (err) {
             res.send(err);
-        } finally {
-            connection.end();
         }
     });
 
 app.route('/api/userCheck')
     .get((req, res) => {
-        connection.query(query1, req.params.username, (err, rows) => {
-            if (err) {
+        connection.query(query1, [req.query.username, data_config.past_month], (err, rows) => {
+            try {
+                console.log(rows);
+                res.json(rows);
+            } catch (err) {
                 res.send(err);
             }
-            res.json(rows)
         });
-        connection.end();
     });
 
 app.route('/api/expense')
