@@ -2,24 +2,22 @@
   <div class="container">
     <div class="py-5 text-center">
       <div class="row">
-        <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/docs/4.0/assets/brand/bootstrap-solid.svg"
-             alt="" width="72" height="72">
-        <img class="d-block mx-auto mb-4" src="../assets/logo.png" alt="" width="72" height="72">
+        <div class="col-sm-4 mb-3 text-center">
+          <img class="d-block mx-auto mb-4" src="../assets/bootstrap.svg" alt="" width="72" height="72">
+        </div>
+        <div class="col-sm-4 mb-3 text-center">
+          <img class="d-block mx-auto mb-4" src="../assets/vue.png" alt="" width="72" height="72">
+        </div>
+        <div class="col-sm-4 mb-3 text-center">
+          <img class="d-block mx-auto mb-4" src="../assets/node.png" alt="" width="72" height="72">
+        </div>
       </div>
+      <br>
       <h2>익스펜스 쉽게 작성하기</h2>
       <p class="lead">매번 엑셀파일 고치기 귀찮아서 만드는 템플릿</p>
     </div>
     <div class="col-md-10" style="float: none;margin: 0 auto;">
       <form class="needs-validation" onsubmit="return false;">
-        <hr class="mb-4">
-        <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="load_info" value="Y">
-          <label class="custom-control-label" for="load_info">정보 가져오기</label>
-        </div>
-        <!--        <div class="custom-control custom-checkbox">-->
-        <!--          <input type="checkbox" class="custom-control-input" id="what_month" value="Y">-->
-        <!--          <label class="custom-control-label" for="what_month">정보 가져오기</label>-->
-        <!--        </div>-->
         <hr class="mb-4">
         <div class="row">
           <div class="col-md-4 mb-3">
@@ -43,12 +41,15 @@
             </select>
           </div>
         </div>
-
         <hr class="mb-4">
         <div class="row">
-          <div class="col-sm-4 mb-3 text-center">
-            <!-- Button to Open the Modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" disabled>
+          <div class="col-sm-4 mb-3 text-center" id="loadCurrentInfo">
+            <button type="button" class="btn btn-primary" @click="loadCurrentInfo()">
+              저장한 최근 정보 가져오기
+            </button>
+          </div>
+          <div class="col-sm-4 mb-3 text-center" id="exMonthUse" style="display:none;">
+            <button type="button" class="btn btn-primary" disabled @click="">
               전월 사용내역 보기
             </button>
           </div>
@@ -62,7 +63,9 @@
               프로젝트 현황보기
             </button>
           </div>
+        </div>
 
+        <div class="row">
           <!-- The Modal -->
           <div class="modal fade" id="myModal">
             <div class="modal-dialog">
@@ -80,11 +83,7 @@
                     <div class="col-md-4">
                       <label for="dates">날짜</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="dates" v-model="dates"
-                               placeholder="MMDD">
-                        <div class="input-group-append">
-                          <span class="input-group-text">@</span>
-                        </div>
+                        <input type="text" class="form-control" id="dates" v-model="dates" placeholder="MMDD">
                       </div>
                     </div>
                     <div class="col-md-4">
@@ -98,8 +97,7 @@
                     <div class="col-md-4">
                       <label for="amount">금액</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="amount" v-model="amount"
-                               placeholder="Amount">
+                        <input type="text" class="form-control" id="amount" v-model="amount">
                         <div class="input-group-append">
                           <span class="input-group-text">원</span>
                         </div>
@@ -140,31 +138,41 @@
           </div>
         </div>
 
-        <hr class="mt-1" v-if="userDetails.addYn === 'Y'">
+        <hr class="mt-1" v-if="addYn === 'Y'">
 
-        <div class="row" v-if="userDetails.addYn === 'Y'">
+        <div class="row" v-if="addYn === 'Y'">
           <div class="container">
-            <table class="table table-dark table-striped">
+            <table class="table table-hover table-sm table-bordered">
               <thead>
               <tr>
-                <th>No</th>
-                <th>Date</th>
-                <th>Code</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Cost Center</th>
-                <th>Comment</th>
+                <th zcope="col">No</th>
+                <th scope="col">Date</th>
+                <th scope="col">Code</th>
+                <th scope="col">Description</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Cost Center</th>
+                <th scope="col">Comment</th>
+                <th scope="col">Modify</th>
+                <th scope="col">Delete</th>
               </tr>
               </thead>
               <tbody>
-              <tr v-for="userDetail in userDetails">
-                <td>{{userDetail.idx}}</td>
-                <td>{{userDetail.dates}}</td>
-                <td>{{userDetail.codesSelected}}</td>
-                <td>{{userDetail.description}}</td>
-                <td>{{userDetail.amount}}</td>
-                <td>{{userDetail.projectsSelected}}</td>
-                <td>{{userDetail.notes}}</td>
+              <tr v-for="(userDetail, userDetailIndex) in userDetails">
+                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetailIndex+1"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetail.dates"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           :value="userDetail.codesSelected"></td>
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetail.amount"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           :value="userDetail.projectsSelected"></td>
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes"></td>
+                <td>
+                  <button class="btn btn-primary btn-sm" @click="rowModify(userDetailIndex+1)">수정</button>
+                </td>
+                <td>
+                  <button class="btn btn-primary btn-sm" @click="rowDelete(userDetailIndex+1)">{{userDetailIndex === 0 ? '전체' : '삭제'}}</button>
+                </td>
               </tr>
               </tbody>
             </table>
@@ -196,19 +204,19 @@
 
         <hr class="mb-4">
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="save_info" value="Y">
+          <input type="checkbox" class="custom-control-input" id="save_info" value="Y" v-model="save_info">
           <label class="custom-control-label" for="save_info">작성자 정보를 저장하여 다음에도 사용하기</label>
         </div>
         <hr class="mb-4">
 
-        <button class="btn btn-primary btn-lg btn-block" type="submit" @click="submitExpense($event)">Expense 작성
+        <button class="btn btn-primary btn-lg btn-block" type="submit" @click="submitExpense()">Expense 작성
         </button>
       </form>
     </div>
     <footer class="my-5 pt-5 text-muted text-center text-small">
       <p class="mb-1">&copy; 2020 HCG Expense</p>
     </footer>
-    <p>data: {{$data}}</p>
+    <!--    <p>data: {{$data}}</p>-->
   </div>
 </template>
 
@@ -218,13 +226,12 @@
     name: 'ExpenseWrite',
     data: function () {
       return {
-        expense_form: [],
-        idx: 1,
-        msg: '',
+        initYn: "N",
+        // idx: 1,
         username: '',
         userData: [],
         combo: [],
-        codes:[],
+        codes: [],
         gradesSelected: "선택해주세요.",
         projectsSelected: "선택해주세요.",
         codesSelected: "선택해주세요.",
@@ -237,31 +244,81 @@
         submitted: '',
         reviewed: '',
         approved: '',
+        save_info: '',
+        addYn: '',
       }
     },
     methods: {
       vue_init: function () {
+        if (this.initYn === "N") {
+          this.$http.get('http://localhost:8226/api/dbs')
+            .then((result) => {
+              console.log("// created()");
+              this.$set(this.combo, 'grades', result.data.grades_txt);
+              this.codes = result.data.codes;
+              this.$set(this.combo, 'projects', result.data.projects_txt);
+              for (let i in result.data.data_config) {
+                this.$set(this.data_config, i, result.data.data_config[i]);
+              }
+              console.log("created() //");
+            });
+          this.initYn = "Y";
+        }
       },
       isEmpty: function (value) {
         if (value === "" || value === null || value === undefined) {
           return true;
         } else return typeof value === "object" && !Object.keys(value).length;
       },
+      rowModify: function (rowIdx) {
+
+      },
+      rowDelete: function (rowIdx) {
+        this.userDetails.splice(rowIdx - 1, 1);
+        if (rowIdx - 1 === 0) {
+          this.addYn = ''
+        }
+      },
       userCheck: function ($event) {
-        let vm = this;
         this.username = $event.target.value;
-        if (this.username !== null) {
-          this.$http.get('http://localhost:8226/api/userCheck')
+        if (!this.isEmpty(this.username)) {
+          this.$http.get('http://localhost:8226/api/userCheck', {
+            params: {
+              username: this.username,
+              past_month: this.data_config.past_month
+            }
+          })
             .then((result) => {
               console.log("// userCheck()");
               if (result.data === null || result.data === undefined) {
                 alert("데이터가 없어 새로 작성합니다.");
               } else {
-                vm.$set(vm.userData, result.data);
-                console.log(vm.userData);
-                // vm.$set(vm.gradesSelected, vm.userData.);
+                this.$set(this.userData, []);
+                this.$set(this.userData, result.data);
+                // this.$set(this.gradesSelected, this.userData.);
               }
               console.log("userCheck() //");
+            });
+        }
+      }, loadCurrentInfo: function () {
+        if (!this.username) {
+          alert("이름을 입력해주세요.");
+          $("#username").focus();
+          return;
+        } else {
+          this.$http.get('http://localhost:8226/api/loadCurrentInfo', {
+            params: {
+              username: this.username
+            }
+          })
+            .then((result) => {
+              console.log("// loadCurrentInfo()");
+              this.gradesSelected = result.data[0].GRADES;
+              this.projectsSelected = result.data[0].PROJECTS;
+              this.submitted = result.data[0].SUBMITTED;
+              this.reviewed = result.data[0].REVIEWED;
+              this.approved = result.data[0].APPROVED;
+              console.log("loadCurrentInfo() //");
             });
         }
       },
@@ -282,17 +339,19 @@
           alert("사용금액 입력은 필수입니다.");
           return false;
         }
-        if (this.isEmpty(this.projectsSelected)) {
-          alert("현 프로젝트 소속 입력은 필수입니다.");
-          return false;
+        // if (this.isEmpty(this.projectsSelected)) {
+        //   alert("현 프로젝트 소속 입력은 필수입니다.");
+        //   return false;
+        // }
+
+        // show 이벤트 플래그
+        if (this.isEmpty(this.addYn)) {
+          this.addYn = 'Y'
         }
 
-        if (this.isEmpty(this.userDetails.addYn)) {
-          this.userDetails.addYn = 'Y'
-        }
-
+        // 데이터에 추가
         this.userDetails.push({
-          idx: this.idx++,
+          // idx: this.idx++,
           dates: this.dates,
           codesSelected: this.codesSelected,
           description: this.description,
@@ -301,47 +360,35 @@
           notes: this.notes
         });
 
+        // 배열에 추가하고 초기화
         this.dates = '';
         this.codesSelected = '';
+        // this.projectsSelected = '';
         this.amount = '';
         this.description = '';
         this.notes = '';
       },
-      submitExpense: function ($event) {
-        // const formData = new FormData(this.$refs['form']); // reference to form element
-        // const data = {}; // need to convert it before using not with XMLHttpRequest
-        // for (let [key, val] of formData.entries()) {
-        //   Object.assign(data, {[key]: val})
-        // }
-        // console.log(data);
-        // axios.post('https://jsonplaceholder.typicode.com/posts', data)
-        //   .then(res => console.log(res.request.response))
+      submitExpense: function () {
+        // DB에 저장하겠다
+        console.log(this.$data)
+        this.$http.get('http://localhost:8226/api/submitExpense', {
+          params: {
+            objectData: this.$data
+          }
+        })
+          .then((result) => {
+
+          });
       }
     },
     beforeCreate() {
 
     },
     created() {
-      let vm = this;
-      this.$http.get('http://localhost:8226/api/dbs')
-        .then((result) => {
-          console.log("// created()");
-          console.log(result.data);
-          vm.$set(vm.combo, 'grades', result.data.grades_txt);
-          vm.codes.push({
-            codes_txt: result.data.codes_txt,
-            codes_comment: result.data.codes_comment
-          });
-          vm.$set(vm.combo, 'projects', result.data.projects_txt);
-
-          for (let i in result.data.data_config) {
-            vm.$set(vm.data_config, i, result.data.data_config[i]);
-          }
-          console.log("created() //");
-        });
+      this.vue_init();
     },
     mounted() {
-      let vm = this;
+
     }
   }
 </script>

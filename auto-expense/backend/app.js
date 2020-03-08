@@ -20,34 +20,6 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 
-let combo = {
-    grades_txt: [],
-    grades_comment: [],
-    projects_txt: [],
-    projects_comment: [],
-    codes_txt: [],
-    codes_comment: [],
-    data_config: []
-}
-
-const query1 =
-    "SELECT T1.*\n" +
-    "  FROM EXPENSE_MASTER T1, EXPENSE_DETAILS T2\n" +
-    " WHERE 1=1\n" +
-    "   AND T1.USERNAME = ?\n" +
-    "   AND T1.USERDETAILS = ?\n" +
-    "   AND T2.USERNAME = T1.USERNAME\n" +
-    "   AND T2.USERDETAILS = T1.USERDETAILS"
-const query2 =
-    "  SELECT T2.*\n" +
-    "    FROM EXPENSE_MASTER T1, EXPENSE_DETAILS T2\n" +
-    "   WHERE 1=1\n" +
-    "     AND T1.USERNAME = ?\n" +
-    "     AND T1.USERDETAILS = ?\n" +
-    "     AND T2.USERNAME = T1.USERNAME\n" +
-    "     AND T2.USERDETAILS = T1.USERDETAILS\n" +
-    "ORDER BY DATES ASC"
-
 app.route('/')
     .get((req, res) => {
         res.sendFile(path.join(__dirname, '../public', 'index.html'));
@@ -56,7 +28,16 @@ app.route('/')
 app.route('/api/dbs')
     .get(async (req, res) => {
         try {
-            connection.query('SELECT * FROM EXPENSE_COMBO', (err, rows) => {
+            let combo = {
+                grades_txt: [],
+                grades_comment: [],
+                projects_txt: [],
+                projects_comment: [],
+                codes: [],
+                data_config: []
+            };
+            let codes = [];
+            connection.query(db_config.combo0, (err, rows) => {
                 for (let i in rows) {
                     if (rows[i].GUBUN == 'grades') {
                         combo.grades_txt.push(rows[i]['TXT_VAL']);
@@ -67,12 +48,14 @@ app.route('/api/dbs')
                         combo.projects_comment.push(rows[i]['TXT_COMMENT']);
                     }
                     if (rows[i].GUBUN == 'codes') {
-                        combo.codes_txt.push(rows[i]['TXT_VAL']);
-                        combo.codes_comment.push(rows[i]['TXT_COMMENT']);
+                        codes.push({
+                            codes_txt: rows[i]['TXT_VAL'],
+                            codes_comment: rows[i]['TXT_COMMENT']
+                        })
                     }
                 }
                 combo.data_config.push(data_config);
-                console.log(combo);
+                combo.codes = codes;
                 res.json(combo);
             });
         } catch (err) {
@@ -82,27 +65,39 @@ app.route('/api/dbs')
 
 app.route('/api/userCheck')
     .get((req, res) => {
-        connection.query(query1, [req.query.username, data_config.past_month], (err, rows) => {
-            try {
-                console.log(rows);
+        try {
+            connection.query(db_config.query1, [req.query.username, req.query.past_month], (err, rows) => {
                 res.json(rows);
-            } catch (err) {
-                res.send(err);
-            }
-        });
+            });
+        } catch
+            (err) {
+            res.send(err);
+        }
     });
 
-app.route('/api/expense')
-    .get(async (req, res) => {
-        const result = {success: true}
+app.route('/api/loadCurrentInfo')
+    .get((req, res) => {
         try {
-            const json = require('./data')
-            result.data = json
+            connection.query(db_config.query0, req.query.username, (err, rows) => {
+                res.json(rows);
+            });
         } catch (err) {
-            result.success = false
-            result.err = err
+            res.send(err);
         }
-        await res.json(result);
+    });
+
+app.route('/api/submitExpense')
+    .get((req, res) => {
+        console.log(req.query.objectData.userDetails)
+        const result = {success: true}
+        // try {
+        //     const json = require('./data')
+        //     result.data = json
+        // } catch (err) {
+        //     result.success = false
+        //     result.err = err
+        // }
+        // await res.json(result);
     });
 
 app.listen(8226, (req, res) => {
