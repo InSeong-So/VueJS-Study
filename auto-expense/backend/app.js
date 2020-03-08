@@ -72,7 +72,7 @@ app.route('/api/dbs')
                     }
                 }
                 combo.data_config.push(data_config);
-                console.log(combo.data_config);
+                console.log(combo);
                 res.json(combo);
             });
         } catch (err) {
