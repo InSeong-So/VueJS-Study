@@ -62,11 +62,9 @@ function getMM(cur) {
 }
 
 module.exports = {
-    past_month: getMM(),
     past_sta_ymd: getCurrMonthLastDay(false),
     past_end_ymd: getCurrMonthLastDay(true),
     past_period: getCurrMonthLastDay(false) + " ~ " + getCurrMonthLastDay(true),
-    cur_month: getMM(1),
     cur_sta_ymd: getCurrMonthLastDay(false, 1),
     cur_end_ymd: getCurrMonthLastDay(true, 1),
     cur_period: getCurrMonthLastDay(false, 1) + " ~ " + getCurrMonthLastDay(true, 1),

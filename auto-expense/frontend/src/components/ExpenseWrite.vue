@@ -2,13 +2,13 @@
   <div class="container">
     <div class="py-5 text-center">
       <div class="row">
-        <div class="col-sm-4 mb-3 text-center">
+        <div class="col-md-4 mb-3 text-center">
           <img class="d-block mx-auto mb-4" src="../assets/bootstrap.svg" alt="" width="72" height="72">
         </div>
-        <div class="col-sm-4 mb-3 text-center">
+        <div class="col-md-4 mb-3 text-center">
           <img class="d-block mx-auto mb-4" src="../assets/vue.png" alt="" width="72" height="72">
         </div>
-        <div class="col-sm-4 mb-3 text-center">
+        <div class="col-md-4 mb-3 text-center">
           <img class="d-block mx-auto mb-4" src="../assets/node.png" alt="" width="72" height="72">
         </div>
       </div>
@@ -20,47 +20,84 @@
       <form class="needs-validation" onsubmit="return false;">
         <hr class="mb-4">
         <div class="row">
-          <div class="col-md-4 mb-3">
-            <label for="username">이름</label>
-            <input type="text" class="form-control" id="username" v-model="username" @blur="userCheck($event)">
+          <div class="col-md-3 mb-3">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">이름</span>
+              </div>
+              <input type="text" class="form-control" id="username" v-model="username">
+            </div>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="grades">직급</label>
-            <select class="custom-select" id="grades" v-model="gradesSelected">
-              <option v-for="grade in combo.grades" :value="grade">
-                {{ grade }}
-              </option>
-            </select>
+          <div class="col-md-3 mb-3 text-center">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">입력할 달</span>
+              </div>
+              <select class="custom-select mr-sm-2" v-model="curMonth" id="monthSelect"
+                      @change="monthChange($event)">
+                <option disabled value="">선택</option>
+                <option value="01">1월</option>
+                <option value="02">2월</option>
+                <option value="03">3월</option>
+                <option value="04">4월</option>
+                <option value="05">5월</option>
+                <option value="06">6월</option>
+                <option value="07">7월</option>
+                <option value="08">8월</option>
+                <option value="09">9월</option>
+                <option value="10">10월</option>
+                <option value="11">11월</option>
+                <option value="12">12월</option>
+              </select>
+            </div>
           </div>
-          <div class="col-md-4 mb-3">
-            <label for="projects">투입 프로젝트</label>
-            <select class="custom-select" id="projects" v-model="projectsSelected">
-              <option v-for="project in combo.projects" :value="project">
-                {{ project }}
-              </option>
-            </select>
+          <div class="col-md-3 mb-3 text-center" id="loadCurrentInfo">
+            <button type="button" class="btn btn-primary" @click="loadCurrentInfo()">
+              최근 데이터 불러오기
+            </button>
+          </div>
+          <div class="col-md-3 mb-3 text-center" id="exMonthUse">
+            <button type="button" class="btn btn-primary" disabled @click="">
+              저장된 총 내역 확인하기
+            </button>
           </div>
         </div>
         <hr class="mb-4">
         <div class="row">
-          <div class="col-sm-4 mb-3 text-center" id="loadCurrentInfo">
-            <button type="button" class="btn btn-primary" @click="loadCurrentInfo()">
-              저장한 최근 정보 가져오기
-            </button>
+          <div class="col-md-3 mb-3">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">직급</span>
+              </div>
+              <select class="custom-select" id="grades" v-model="gradesSelected">
+                <option disabled value="">선택</option>
+                <option v-for="grade in combo.grades" :value="grade">
+                  {{ grade }}
+                </option>
+              </select>
+            </div>
           </div>
-          <div class="col-sm-4 mb-3 text-center" id="exMonthUse" style="display:none;">
-            <button type="button" class="btn btn-primary" disabled @click="">
-              전월 사용내역 보기
-            </button>
+          <div class="col-md-4 mb-3">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">프로젝트</span>
+              </div>
+              <select class="custom-select" id="projects" v-model="projectsSelected">
+                <option disabled value="">선택</option>
+                <option v-for="project in combo.projects" :value="project">
+                  {{ project }}
+                </option>
+              </select>
+            </div>
           </div>
-          <div class="col-sm-4 mb-3 text-center">
-            <button type="button" class="btn btn-primary active" data-toggle="modal" data-target="#myModal">
-              사용내역 추가하기
-            </button>
-          </div>
-          <div class="col-sm-4 mb-3 text-center">
+          <div class="col-md-2 mb-3 text-center">
             <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
-              프로젝트 현황보기
+              프로젝트현황
+            </button>
+          </div>
+          <div class="col-md-3 mb-3 text-center">
+            <button type="button" class="btn btn-primary active" data-toggle="modal" data-target="#myModal">
+              사용 내역 추가하기
             </button>
           </div>
         </div>
@@ -83,12 +120,14 @@
                     <div class="col-md-4">
                       <label for="dates">날짜</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="dates" v-model="dates" placeholder="MMDD">
+                        <input type="text" class="form-control" id="dates" v-model="dates" placeholder="MMDD"
+                               @blur="regexMonth($event)">
                       </div>
                     </div>
                     <div class="col-md-4">
                       <label for="codes">코드</label>
                       <select name="codes" id="codes" v-model="codesSelected" class="custom-select">
+                        <option disabled value="">선택</option>
                         <option v-for="code in codes" :value="code.codes_txt">
                           {{ code.codes_comment }}
                         </option>
@@ -97,7 +136,7 @@
                     <div class="col-md-4">
                       <label for="amount">금액</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="amount" v-model="amount">
+                        <input type="number" class="form-control" id="amount" v-model="amount">
                         <div class="input-group-append">
                           <span class="input-group-text">원</span>
                         </div>
@@ -158,12 +197,16 @@
               </thead>
               <tbody>
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
-                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetailIndex+1"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetail.dates"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           :value="userDetailIndex+1"></td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           :value="userDetail.dates"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.codesSelected"></td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" :value="userDetail.amount"></td>
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description">
+                </td>
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           :value="userDetail.amount"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.projectsSelected"></td>
                 <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes"></td>
@@ -171,7 +214,9 @@
                   <button class="btn btn-primary btn-sm" @click="rowModify(userDetailIndex+1)">수정</button>
                 </td>
                 <td>
-                  <button class="btn btn-primary btn-sm" @click="rowDelete(userDetailIndex+1)">{{userDetailIndex === 0 ? '전체' : '삭제'}}</button>
+                  <button class="btn btn-primary btn-sm" @click="rowDelete(userDetailIndex+1)">{{userDetailIndex === 0 ?
+                    '전체' : '삭제'}}
+                  </button>
                 </td>
               </tr>
               </tbody>
@@ -213,10 +258,9 @@
         </button>
       </form>
     </div>
-    <footer class="my-5 pt-5 text-muted text-center text-small">
+    <footer class="my-4 text-muted text-center text-small">
       <p class="mb-1">&copy; 2020 HCG Expense</p>
     </footer>
-    <!--    <p>data: {{$data}}</p>-->
   </div>
 </template>
 
@@ -232,11 +276,13 @@
         userData: [],
         combo: [],
         codes: [],
-        gradesSelected: "선택해주세요.",
-        projectsSelected: "선택해주세요.",
-        codesSelected: "선택해주세요.",
+        gradesSelected: '',
+        projectsSelected: '',
+        codesSelected: '',
         userDetails: [],
         data_config: [],
+        exMonth: '',
+        curMonth: '',
         dates: '',
         description: '',
         amount: '',
@@ -270,6 +316,29 @@
           return true;
         } else return typeof value === "object" && !Object.keys(value).length;
       },
+      monthChange: function ($event) {
+        this.curMonth = $event.target.value;
+        console.log(this.curMonth);
+        let tempMonth = this.curMonth - 1;
+        if (tempMonth < 10 && tempMonth !== 0) {
+          this.exMonth = "0" + tempMonth;
+        } else if (tempMonth === 0) {
+          this.exMonth = "12";
+        }
+      },
+      regexMonth: function (event) {
+        const regexM = /(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        const tempM = event.target.value;
+        if (tempM !== '') {
+          if (regexM.test(tempM)) {
+            this.dates = tempM;
+          } else {
+            this.dates = '';
+            $("#dates").focus();
+            return alert("날짜형식이 맞지 않습니다.\nMMDD 형식으로 입력해주세요.");
+          }
+        }
+      },
       rowModify: function (rowIdx) {
 
       },
@@ -279,45 +348,35 @@
           this.addYn = ''
         }
       },
-      userCheck: function ($event) {
-        this.username = $event.target.value;
-        if (!this.isEmpty(this.username)) {
-          this.$http.get('http://localhost:8226/api/userCheck', {
-            params: {
-              username: this.username,
-              past_month: this.data_config.past_month
-            }
-          })
-            .then((result) => {
-              console.log("// userCheck()");
-              if (result.data === null || result.data === undefined) {
-                alert("데이터가 없어 새로 작성합니다.");
-              } else {
-                this.$set(this.userData, []);
-                this.$set(this.userData, result.data);
-                // this.$set(this.gradesSelected, this.userData.);
-              }
-              console.log("userCheck() //");
-            });
-        }
-      }, loadCurrentInfo: function () {
+      allProjects: function () {
+
+      },
+      loadCurrentInfo: function () {
         if (!this.username) {
           alert("이름을 입력해주세요.");
           $("#username").focus();
           return;
+        } else if (!this.curMonth) {
+          alert("입력할 달을 선택한 뒤 최근 저장 입력 정보를 확인하세요.");
+          return;
         } else {
-          this.$http.get('http://localhost:8226/api/loadCurrentInfo', {
-            params: {
-              username: this.username
-            }
+          this.$http.defaults.headers.post['Content-Type'] = 'application/json';
+          this.$http.post('http://localhost:8226/api/loadCurrentInfo', {
+            username: this.username,
+            ud: this.curMonth
           })
             .then((result) => {
               console.log("// loadCurrentInfo()");
-              this.gradesSelected = result.data[0].GRADES;
-              this.projectsSelected = result.data[0].PROJECTS;
-              this.submitted = result.data[0].SUBMITTED;
-              this.reviewed = result.data[0].REVIEWED;
-              this.approved = result.data[0].APPROVED;
+              if (result.data.success) {
+                console.log(result.data.data1);
+                this.gradesSelected = result.data.data1[0].GRADES;
+                this.projectsSelected = result.data.data1[0].PROJECTS;
+                this.submitted = result.data.data1[0].SUBMITTED;
+                this.reviewed = result.data.data1[0].REVIEWED;
+                this.approved = result.data.data1[0].APPROVED;
+              } else {
+                alert("조회된 자료가 없으므로 새로 작성합니다.");
+              }
               console.log("loadCurrentInfo() //");
             });
         }
@@ -370,11 +429,9 @@
       },
       submitExpense: function () {
         // DB에 저장하겠다
-        console.log(this.$data)
-        this.$http.get('http://localhost:8226/api/submitExpense', {
-          params: {
-            objectData: this.$data
-          }
+        this.$http.defaults.headers.post['Content-Type'] = 'application/json';
+        this.$http.post('http://localhost:8226/api/submitExpense', {
+          objectData: this.$data
         })
           .then((result) => {
 

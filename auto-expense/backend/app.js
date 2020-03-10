@@ -8,6 +8,7 @@ const mysql = require('mysql');
 
 const db_config = require('./src/db/config');
 const data_config = require('./src/data/date');
+const ex_config = require('./src/ex/excelWrite');
 const connection = mysql.createConnection(db_config);
 
 const app = express();
@@ -63,32 +64,55 @@ app.route('/api/dbs')
         }
     });
 
-app.route('/api/userCheck')
-    .get((req, res) => {
-        try {
-            connection.query(db_config.query1, [req.query.username, req.query.past_month], (err, rows) => {
-                res.json(rows);
-            });
-        } catch
-            (err) {
-            res.send(err);
-        }
-    });
-
 app.route('/api/loadCurrentInfo')
-    .get((req, res) => {
+    .post((req, res) => {
+        const result = {success: true}
         try {
-            connection.query(db_config.query0, req.query.username, (err, rows) => {
-                res.json(rows);
+            connection.query(db_config.query1, [req.body.username, req.body.ud], (err, rows) => {
+                if(rows.length > 0){
+                    result.data1 = rows;
+                    res.json(result);
+                }else{
+                    result.success = false;
+                    res.json(result);
+                }
             });
+
         } catch (err) {
             res.send(err);
         }
     });
 
 app.route('/api/submitExpense')
-    .get((req, res) => {
-        console.log(req.query.objectData.userDetails)
+    .post((req, res) => {
+        console.log(req.body.objectData)
+        const username = req.body.objectData.username;
+        const grade = req.body.objectData.gradesSelected;
+        const project = req.body.objectData.projectsSelected;
+        const ud = req.body.objectData.data_config.past_month;
+        const submitted = req.body.objectData.submitted;
+        const reviewed = req.body.objectData.reviewed;
+        const approved = req.body.objectData.approved;
+        const userDetails = req.body.objectData.userDetails;
+        const dbSave = req.body.objectData.save_info;
+        // DB에 저장
+        // if (dbSave) {
+        //     connection.query(db_config.query3, [username, grade, project, ud, submitted, reviewed, approved], (err, result) => {
+        //
+        //     });
+        //
+        //     userDetails.forEach((item, index) => {
+        //         connection.query(db_config.query4, [username, ud, item.dates, item.codesSelected, item.description, item.amount, item.projectsSelected, item.notes], (err, result) => {
+        //
+        //         })
+        //         console.log(item);
+        //         console.log(index);
+        //     })
+        //
+        // } else { // 엑셀에 바로 저장
+        //
+        // }
+
         const result = {success: true}
         // try {
         //     const json = require('./data')
