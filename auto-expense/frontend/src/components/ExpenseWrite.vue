@@ -80,7 +80,7 @@
           <div class="col-md-4 mb-3">
             <div class="input-group">
               <div class="input-group-prepend">
-                <span class="input-group-text">프로젝트</span>
+                <span class="input-group-text">CostCenter</span>
               </div>
               <select class="custom-select" id="projects" v-model="projectsSelected">
                 <option disabled value="">선택</option>
@@ -197,19 +197,21 @@
               </thead>
               <tbody>
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
                            :value="userDetailIndex+1"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
                            :value="userDetail.dates"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
                            :value="userDetail.codesSelected"></td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description">
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"
+                           readonly>
                 </td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
                            :value="userDetail.amount"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
+                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
                            :value="userDetail.projectsSelected"></td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes"></td>
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes" readonly>
+                </td>
                 <td>
                   <button class="btn btn-primary btn-sm" @click="rowModify(userDetailIndex+1)">수정</button>
                 </td>
@@ -259,7 +261,7 @@
       </form>
     </div>
     <footer class="my-4 text-muted text-center text-small">
-      <p class="mb-1">&copy; 2020 HCG Expense</p>
+      <p class="mb-1">&copy; 2020 HCG Expense v1.0</p>
     </footer>
   </div>
 </template>
@@ -318,7 +320,6 @@
       },
       monthChange: function ($event) {
         this.curMonth = $event.target.value;
-        console.log(this.curMonth);
         let tempMonth = this.curMonth - 1;
         if (tempMonth < 10 && tempMonth !== 0) {
           this.exMonth = "0" + tempMonth;
@@ -367,13 +368,17 @@
           })
             .then((result) => {
               console.log("// loadCurrentInfo()");
+              console.log(result);
               if (result.data.success) {
-                console.log(result.data.data1);
-                this.gradesSelected = result.data.data1[0].GRADES;
-                this.projectsSelected = result.data.data1[0].PROJECTS;
-                this.submitted = result.data.data1[0].SUBMITTED;
-                this.reviewed = result.data.data1[0].REVIEWED;
-                this.approved = result.data.data1[0].APPROVED;
+                this.gradesSelected = result.data.data1[0].gradesSelected;
+                this.projectsSelected = result.data.data1[0].projectsSelected;
+                this.submitted = result.data.data1[0].submitted;
+                this.reviewed = result.data.data1[0].reviewed;
+                this.approved = result.data.data1[0].approved;
+
+                this.userDetails = result.data.data2;
+                this.addYn = 'Y'
+                console.log(this.userDetails);
               } else {
                 alert("조회된 자료가 없으므로 새로 작성합니다.");
               }
@@ -435,6 +440,20 @@
         })
           .then((result) => {
 
+          });
+
+        // 엑셀 다운로드 로직
+        this.$http.get('http://localhost:8226/download', {
+          responseType: 'blob'
+        })
+          .then((result) => {
+            console.log(result)
+            const url = window.URL.createObjectURL(new Blob([result.data], { type: result.headers['content-type'] }));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'test.xlsx');
+            document.body.appendChild(link);
+            link.click();
           });
       }
     },

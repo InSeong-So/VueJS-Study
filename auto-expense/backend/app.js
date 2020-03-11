@@ -66,18 +66,22 @@ app.route('/api/dbs')
 
 app.route('/api/loadCurrentInfo')
     .post((req, res) => {
-        const result = {success: true}
+        let result = {success: true}
         try {
-            connection.query(db_config.query1, [req.body.username, req.body.ud], (err, rows) => {
-                if(rows.length > 0){
-                    result.data1 = rows;
-                    res.json(result);
-                }else{
-                    result.success = false;
-                    res.json(result);
-                }
-            });
+            const username = req.body.username;
+            const ud = req.body.ud;
 
+            const sql1 = db_config.query1;
+            const sql1s = mysql.format(sql1, [username, ud]);
+
+            const sql2 = db_config.query2;
+            const sql2s = mysql.format(sql2, [username, ud]);
+
+            connection.query(sql1s + sql2s, (err, rows) => {
+                result.data1 = rows[0];
+                result.data2 = rows[1];
+                res.send(result);
+            });
         } catch (err) {
             res.send(err);
         }
@@ -122,6 +126,12 @@ app.route('/api/submitExpense')
         //     result.err = err
         // }
         // await res.json(result);
+    });
+
+app.route('/download')
+    .get((req, res) => {
+        const file = `${__dirname}/src/ex/expense.xlsx`;
+        res.download(file);
     });
 
 app.listen(8226, (req, res) => {
