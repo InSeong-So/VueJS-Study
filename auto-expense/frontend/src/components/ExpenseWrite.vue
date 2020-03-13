@@ -25,7 +25,7 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">이름</span>
               </div>
-              <input type="text" class="form-control" id="username" v-model="username">
+              <input type="text" class="form-control" ref="username" id="username" v-model="username">
             </div>
           </div>
           <div class="col-md-3 mb-3 text-center">
@@ -56,12 +56,51 @@
               최근 데이터 불러오기
             </button>
           </div>
-          <div class="col-md-3 mb-3 text-center" id="exMonthUse">
-            <button type="button" class="btn btn-primary" disabled @click="">
+          <div class="col-md-3 mb-3 text-center" id="loadAllSaveInfo">
+            <button type="button" class="btn btn-primary" @click="loadAllSaveInfo()" data-toggle="modal"
+                    data-target="#myModal3">
               저장된 총 내역 확인하기
             </button>
           </div>
         </div>
+
+        <!-- 프로젝트현황 -->
+        <div class="row">
+          <!-- The Modal -->
+          <div class="modal fade" id="myModal3">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Modal Heading</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <label for="tempbody2">비고</label>
+                      <div class="list-group" id="tempbody2" name="tempbody2">
+                        <a href="#" v-for="" class="list-group-item list-group-item-action list-group-item-light"></a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button @click="addUserDetails()" class="btn btn-primary" type="button">Add
+                  </button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
         <hr class="mb-4">
         <div class="row">
           <div class="col-md-3 mb-3">
@@ -91,7 +130,7 @@
             </div>
           </div>
           <div class="col-md-2 mb-3 text-center">
-            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal2">
               프로젝트현황
             </button>
           </div>
@@ -102,6 +141,45 @@
           </div>
         </div>
 
+        <!-- 프로젝트현황 -->
+        <div class="row">
+          <!-- The Modal -->
+          <div class="modal fade" id="myModal2">
+            <div class="modal-dialog">
+              <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                  <h4 class="modal-title">Modal Heading</h4>
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                  <div class="row mb-3">
+                    <div class="col-md-12">
+                      <label for="tempbody">비고</label>
+                      <div class="list-group" id="tempbody" name="tempbody">
+                        <a href="#" class="list-group-item list-group-item-action list-group-item-light">This is a light
+                          list group item</a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                  <button @click="addUserDetails()" class="btn btn-primary" type="button">Add
+                  </button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 사용 내역 추가하기 -->
         <div class="row">
           <!-- The Modal -->
           <div class="modal fade" id="myModal">
@@ -120,7 +198,8 @@
                     <div class="col-md-4">
                       <label for="dates">날짜</label>
                       <div class="input-group">
-                        <input type="text" class="form-control" id="dates" v-model="dates" placeholder="MMDD"
+                        <input type="text" class="form-control" ref="dates" id="dates" v-model="dates"
+                               placeholder="MMDD"
                                @blur="regexMonth($event)">
                       </div>
                     </div>
@@ -273,7 +352,6 @@
     data: function () {
       return {
         initYn: "N",
-        // idx: 1,
         username: '',
         userData: [],
         combo: [],
@@ -303,7 +381,7 @@
             .then((result) => {
               console.log("// created()");
               this.$set(this.combo, 'grades', result.data.grades_txt);
-              this.codes = result.data.codes;
+              this.$set(this, 'codes', result.data.codes);
               this.$set(this.combo, 'projects', result.data.projects_txt);
               for (let i in result.data.data_config) {
                 this.$set(this.data_config, i, result.data.data_config[i]);
@@ -319,12 +397,12 @@
         } else return typeof value === "object" && !Object.keys(value).length;
       },
       monthChange: function ($event) {
-        this.curMonth = $event.target.value;
+        this.$set(this, 'curMonth', $event.target.value);
         let tempMonth = this.curMonth - 1;
         if (tempMonth < 10 && tempMonth !== 0) {
-          this.exMonth = "0" + tempMonth;
+          this.$set(this, 'exMonth', "0" + tempMonth);
         } else if (tempMonth === 0) {
-          this.exMonth = "12";
+          this.$set(this, 'exMonth', "12");
         }
       },
       regexMonth: function (event) {
@@ -332,10 +410,10 @@
         const tempM = event.target.value;
         if (tempM !== '') {
           if (regexM.test(tempM)) {
-            this.dates = tempM;
+            this.$set(this, 'dates', tempM);
           } else {
-            this.dates = '';
-            $("#dates").focus();
+            this.$set(this, 'dates', '');
+            this.$refs.dates.focus();
             return alert("날짜형식이 맞지 않습니다.\nMMDD 형식으로 입력해주세요.");
           }
         }
@@ -346,7 +424,7 @@
       rowDelete: function (rowIdx) {
         this.userDetails.splice(rowIdx - 1, 1);
         if (rowIdx - 1 === 0) {
-          this.addYn = ''
+          this.$set(this, 'addYn', '');
         }
       },
       allProjects: function () {
@@ -355,12 +433,21 @@
       loadCurrentInfo: function () {
         if (!this.username) {
           alert("이름을 입력해주세요.");
-          $("#username").focus();
+          this.$refs.username.focus();
           return;
         } else if (!this.curMonth) {
           alert("입력할 달을 선택한 뒤 최근 저장 입력 정보를 확인하세요.");
           return;
         } else {
+          this.$set(this, 'gradesSelected', '');
+          this.$set(this, 'projectsSelected', '');
+          this.$set(this, 'submitted', '');
+          this.$set(this, 'reviewed', '');
+          this.$set(this, 'approved', '');
+
+          this.$set(this, 'userDetails', []);
+          this.$set(this, 'addYn', '');
+
           this.$http.defaults.headers.post['Content-Type'] = 'application/json';
           this.$http.post('http://localhost:8226/api/loadCurrentInfo', {
             username: this.username,
@@ -368,23 +455,34 @@
           })
             .then((result) => {
               console.log("// loadCurrentInfo()");
-              console.log(result);
               if (result.data.success) {
-                this.gradesSelected = result.data.data1[0].gradesSelected;
-                this.projectsSelected = result.data.data1[0].projectsSelected;
-                this.submitted = result.data.data1[0].submitted;
-                this.reviewed = result.data.data1[0].reviewed;
-                this.approved = result.data.data1[0].approved;
+                this.$set(this, 'gradesSelected', result.data.data1[0].gradesSelected);
+                this.$set(this, 'projectsSelected', result.data.data1[0].projectsSelected);
+                this.$set(this, 'submitted', result.data.data1[0].submitted);
+                this.$set(this, 'reviewed', result.data.data1[0].reviewed);
+                this.$set(this, 'approved', result.data.data1[0].approved);
 
-                this.userDetails = result.data.data2;
-                this.addYn = 'Y'
-                console.log(this.userDetails);
+                this.$set(this, 'userDetails', result.data.data2);
+                this.$set(this, 'addYn', 'Y');
               } else {
                 alert("조회된 자료가 없으므로 새로 작성합니다.");
               }
               console.log("loadCurrentInfo() //");
             });
         }
+      },
+      loadAllSaveInfo: function () {
+        this.$http.defaults.headers.post['Content-Type'] = 'application/json';
+        this.$http.post('http://localhost:8226/api/loadAllSaveInfo', {
+          username: this.username
+        })
+          .then((result) => {
+            if (result.data.success) {
+
+            } else {
+              alert("불러올 내역이 존재하지 않습니다.");
+            }
+          });
       },
       addUserDetails: function () {
         if (this.isEmpty(this.dates)) {
@@ -410,7 +508,7 @@
 
         // show 이벤트 플래그
         if (this.isEmpty(this.addYn)) {
-          this.addYn = 'Y'
+          this.$set(this, 'addYn', 'Y');
         }
 
         // 데이터에 추가
@@ -425,12 +523,11 @@
         });
 
         // 배열에 추가하고 초기화
-        this.dates = '';
-        this.codesSelected = '';
-        // this.projectsSelected = '';
-        this.amount = '';
-        this.description = '';
-        this.notes = '';
+        this.$set(this, 'dates', '');
+        this.$set(this, 'codesSelected', '');
+        this.$set(this, 'amount', '');
+        this.$set(this, 'description', '');
+        this.$set(this, 'notes', '');
       },
       submitExpense: function () {
         // DB에 저장하겠다
@@ -443,18 +540,18 @@
           });
 
         // 엑셀 다운로드 로직
-        this.$http.get('http://localhost:8226/download', {
-          responseType: 'blob'
-        })
-          .then((result) => {
-            console.log(result)
-            const url = window.URL.createObjectURL(new Blob([result.data], { type: result.headers['content-type'] }));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'test.xlsx');
-            document.body.appendChild(link);
-            link.click();
-          });
+        // this.$http.get('http://localhost:8226/download', {
+        //   responseType: 'blob'
+        // })
+        //   .then((result) => {
+        //     console.log(result)
+        //     const url = window.URL.createObjectURL(new Blob([result.data], {type: result.headers['content-type']}));
+        //     const link = document.createElement('a');
+        //     link.href = url;
+        //     link.setAttribute('download', 'test.xlsx');
+        //     document.body.appendChild(link);
+        //     link.click();
+        //   });
       }
     },
     beforeCreate() {

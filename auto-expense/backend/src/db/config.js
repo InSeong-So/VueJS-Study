@@ -40,4 +40,8 @@ module.exports = {
         " VALUES (\n" +
         " ?,?,\n" +
         " ?,?,?,?,?,?);",
+    query5:
+        "SELECT T1.*\n" +
+        "FROM EXPENSE_MASTER T1\n" +
+        "WHERE T1.USERNAME = ?;",
 };

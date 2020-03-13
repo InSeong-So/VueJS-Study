@@ -78,14 +78,38 @@ app.route('/api/loadCurrentInfo')
             const sql2s = mysql.format(sql2, [username, ud]);
 
             connection.query(sql1s + sql2s, (err, rows) => {
-                result.data1 = rows[0];
-                result.data2 = rows[1];
-                res.send(result);
+                if (rows[0].length > 0 && rows[1].length > 0) {
+                    result.data1 = rows[0];
+                    result.data2 = rows[1];
+                    res.send(result);
+                } else {
+                    result.success = false;
+                    res.send(result);
+                }
             });
         } catch (err) {
             res.send(err);
         }
     });
+
+app.route('/api/loadAllSaveInfo')
+    .post((req, res) => {
+        let result = {success: true};
+        try {
+            const username = req.body.username;
+            connection.query(db_config.query5, username, (err, rows) => {
+                if (rows.length > 0) {
+                    result.data = rows;
+                    res.send(result);
+                } else {
+                    result.success = false;
+                    res.send(result);
+                }
+            });
+        } catch (err) {
+            res.send(err);
+        }
+    })
 
 app.route('/api/submitExpense')
     .post((req, res) => {
