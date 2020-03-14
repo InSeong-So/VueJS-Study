@@ -5,7 +5,9 @@ const readline = require('readline');
 const {google} = require('googleapis');
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'
+    , 'https://www.googleapis.com/auth/drive'
+    , 'https://www.googleapis.com/auth/drive.file'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -77,20 +79,47 @@ function getNewToken(oAuth2Client, callback) {
  */
 function listMajors(auth) {
     const sheets = google.sheets({version: 'v4', auth});
+    main(sheets);
     sheets.spreadsheets.values.get({
         spreadsheetId: '1gRfM1mu8ndo3VZTzfPi9KUwDOGffK4c6S8aFTxdfhHg',
-        range:"시트3!A1:H100"
+        range: "template!A1:F100"
     }, (err, res) => {
+        console.log(sheets);
         if (err) return console.log('The API returned an error: ' + err);
+        // const cellData = res.data.
         const rows = res.data.values;
         if (rows.length) {
             console.log('Name, Major:');
-            // Print columns A and E, which correspond to indices 0 and 4.
+            console.log(rows);
             rows.map((row) => {
-                console.log(`${row[0]}, ${row[4]}`);
+                if (row[0] === undefined || row[4] === undefined) {
+                    return;
+                }
+                // console.log(`${row[0]}, ${row[4]}`);
             });
         } else {
             console.log('No data found.');
         }
     });
+}
+
+function main(sheets) {
+    const request = {
+        spreadsheetId: '1gRfM1mu8ndo3VZTzfPi9KUwDOGffK4c6S8aFTxdfhHg',  // TODO: Update placeholder value.
+        sheetId: '1701446183',  // TODO: Update placeholder value.
+        resource: {
+            destinationSpreadsheetId: '1gRfM1mu8ndo3VZTzfPi9KUwDOGffK4c6S8aFTxdfhHg',  // TODO: Update placeholder value.
+            // TODO: Add desired properties to the request body.
+        },
+    };
+
+    try {
+        const response = (await sheets.spreadsheets.sheets.copyTo(request)).data;
+        // TODO: Change code below to process the `response` object:
+        console.log("=========");
+        console.log(JSON.stringify(response, null, 2));
+        console.log("=========");
+    } catch (err) {
+        console.error(err);
+    }
 }

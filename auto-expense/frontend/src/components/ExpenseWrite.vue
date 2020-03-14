@@ -83,7 +83,8 @@
                     <div class="col-md-12">
                       <label for="tempbody2">비고</label>
                       <div class="list-group" id="tempbody2" name="tempbody2">
-                        <a href="#" v-for="" class="list-group-item list-group-item-action list-group-item-light"></a>
+                        <a href="#" v-for="userSaveData in userData"
+                           class="list-group-item list-group-item-action list-group-item-light"></a>
                       </div>
                     </div>
                   </div>
@@ -276,20 +277,20 @@
               </thead>
               <tbody>
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
-                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetailIndex+1"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.dates"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.codesSelected"></td>
                 <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"
-                           readonly>
+                >
                 </td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.amount"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0" readonly
+                <td><input type="text" class="form-control form-control-sm text-center border-0"
                            :value="userDetail.projectsSelected"></td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes" readonly>
+                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes">
                 </td>
                 <td>
                   <button class="btn btn-primary btn-sm" @click="rowModify(userDetailIndex+1)">수정</button>
@@ -372,6 +373,7 @@
         approved: '',
         save_info: '',
         addYn: '',
+        isReadonly: []
       }
     },
     methods: {
@@ -521,6 +523,8 @@
           projectsSelected: this.projectsSelected,
           notes: this.notes
         });
+
+        this.$set(this.isReadonly, 'idx', true);
 
         // 배열에 추가하고 초기화
         this.$set(this, 'dates', '');
