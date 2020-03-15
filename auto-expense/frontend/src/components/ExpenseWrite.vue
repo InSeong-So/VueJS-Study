@@ -271,34 +271,34 @@
                 <th scope="col">Amount</th>
                 <th scope="col">Cost Center</th>
                 <th scope="col">Comment</th>
-                <th scope="col">Modify</th>
                 <th scope="col">Delete</th>
               </tr>
               </thead>
               <tbody>
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           v-bind:readonly="isReadonly"
                            :value="userDetailIndex+1"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           v-bind:readonly="isReadonly"
                            :value="userDetail.dates"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           v-bind:readonly="isReadonly"
                            :value="userDetail.codesSelected"></td>
                 <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"
-                >
+                           v-bind:readonly="isReadonly">
                 </td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           v-bind:readonly="isReadonly"
                            :value="userDetail.amount"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
+                           v-bind:readonly="isReadonly"
                            :value="userDetail.projectsSelected"></td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.notes">
+                <td><input type="text" class="form-control form-control-sm border-0"
+                           v-bind:readonly="isReadonly" :value="userDetail.notes">
                 </td>
                 <td>
-                  <button class="btn btn-primary btn-sm" @click="rowModify(userDetailIndex+1)">수정</button>
-                </td>
-                <td>
-                  <button class="btn btn-primary btn-sm" @click="rowDelete(userDetailIndex+1)">{{userDetailIndex === 0 ?
-                    '전체' : '삭제'}}
-                  </button>
+                  <button class="btn btn-primary btn-sm" @click="rowDelete(userDetail, userDetailIndex)">삭제</button>
                 </td>
               </tr>
               </tbody>
@@ -352,6 +352,7 @@
     name: 'ExpenseWrite',
     data: function () {
       return {
+        records: [],
         initYn: "N",
         username: '',
         userData: [],
@@ -373,10 +374,25 @@
         approved: '',
         save_info: '',
         addYn: '',
-        isReadonly: []
+        isReadonly: true
       }
     },
     methods: {
+      fetchData(token) {
+        this.$http.get('http://localhost:8226/api/records', {
+          headers: {'Authorization': `Bearer ${token}`}
+        })
+          .then(response => {
+            this.records = response.data.records;
+          })
+          .catch(error => {
+            if (error.response.status === 401) {
+              localStorage.removeItem('auth_token');
+              location.href = './login.html';
+            }
+            // handle error
+          });
+      },
       vue_init: function () {
         if (this.initYn === "N") {
           this.$http.get('http://localhost:8226/api/dbs')
@@ -423,8 +439,8 @@
       rowModify: function (rowIdx) {
 
       },
-      rowDelete: function (rowIdx) {
-        this.userDetails.splice(rowIdx - 1, 1);
+      rowDelete: function (userDetail, rowIdx) {
+        this.userDetails.splice(rowIdx, 1);
         if (rowIdx - 1 === 0) {
           this.$set(this, 'addYn', '');
         }
@@ -524,8 +540,6 @@
           notes: this.notes
         });
 
-        this.$set(this.isReadonly, 'idx', true);
-
         // 배열에 추가하고 초기화
         this.$set(this, 'dates', '');
         this.$set(this, 'codesSelected', '');
@@ -562,6 +576,12 @@
 
     },
     created() {
+      // let token = localStorage.getItem('auth_token');
+      // if (!token) {
+      //   location.href = './login.html';
+      // }
+      // this.fetchData(token);
+
       this.vue_init();
     },
     mounted() {
