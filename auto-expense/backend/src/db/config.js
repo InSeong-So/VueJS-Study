@@ -25,14 +25,8 @@ module.exports = {
         "     AND T2.userdetails = T1.userdetails\n" +
         "ORDER BY dates ASC;",
     query3:
-        "INSERT INTO EXPENSE_MASTER (\n" +
-        "username,gradesSelected,projectsSelected,\n" +
-        "userdetails,\n" +
-        "submitted,reviewed,approved)\n" +
-        "VALUES (\n" +
-        "?,?,?,\n" +
-        "?\n," +
-        "?,?,?);",
+        "REPLACE INTO EXPENSE_MASTER \n" +
+        "VALUES (?, ?, ?, ?, ?, ?, ?);",
     query4:
         "INSERT INTO EXPENSE_DETAILS (\n" +
         "username,userdetails,\n" +

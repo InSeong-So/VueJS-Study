@@ -278,24 +278,38 @@
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
                            v-bind:readonly="isReadonly"
-                           :value="userDetailIndex+1"></td>
+                           :value="userDetailIndex+1" @blur="dataReadonly" @dblclick="dataModify"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
                            v-bind:readonly="isReadonly"
-                           :value="userDetail.dates"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
-                           v-bind:readonly="isReadonly"
-                           :value="userDetail.codesSelected"></td>
+                           :value="userDetail.dates" @blur="dataReadonly" @dblclick="dataModify"></td>
+                <td>
+                  <select class="custom-select" v-model="userDetail.codesSelected" v-bind:disabled="isDisabled"
+                          :value="userDetail.codesSelected" @blur="dataReadonly" @dblclick="dataModify">
+                    <option disabled value="">선택</option>
+                    <option v-for="code in codes" :value="code.codes_txt">
+                      {{ code.codes_comment }}
+                    </option>
+                  </select>
+                </td>
                 <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"
-                           v-bind:readonly="isReadonly">
+                           v-bind:readonly="isReadonly" @blur="dataReadonly" @dblclick="dataModify">
                 </td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
                            v-bind:readonly="isReadonly"
-                           :value="userDetail.amount"></td>
-                <td><input type="text" class="form-control form-control-sm text-center border-0"
-                           v-bind:readonly="isReadonly"
-                           :value="userDetail.projectsSelected"></td>
+                           :value="userDetail.amount" @blur="dataReadonly" @dblclick="dataModify"></td>
+                <td>
+                  <select class="custom-select" v-bind:disabled="isDisabled" :value="userDetail.projectsSelected"
+                          v-model="userDetail.projectsSelected" @blur="dataReadonly" @dblclick="dataModify">
+                    <option disabled value="">선택</option>
+                    <option v-for="project in combo.projects" :value="project">
+                      {{ project }}
+                    </option>
+                  </select>
+                </td>
+
                 <td><input type="text" class="form-control form-control-sm border-0"
-                           v-bind:readonly="isReadonly" :value="userDetail.notes">
+                           v-bind:readonly="isReadonly" :value="userDetail.notes" @blur="dataReadonly"
+                           @dblclick="dataModify">
                 </td>
                 <td>
                   <button class="btn btn-primary btn-sm" @click="rowDelete(userDetail, userDetailIndex)">삭제</button>
@@ -374,7 +388,8 @@
         approved: '',
         save_info: '',
         addYn: '',
-        isReadonly: true
+        isReadonly: true,
+        isDisabled: true
       }
     },
     methods: {
@@ -424,7 +439,7 @@
         }
       },
       regexMonth: function (event) {
-        const regexM = /(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        const regexM = /(0[1-9]|1[012])(0[1-9]|[12][0-9]|3[0-1])/;
         const tempM = event.target.value;
         if (tempM !== '') {
           if (regexM.test(tempM)) {
@@ -432,12 +447,17 @@
           } else {
             this.$set(this, 'dates', '');
             this.$refs.dates.focus();
-            return alert("날짜형식이 맞지 않습니다.\nMMDD 형식으로 입력해주세요.");
+            alert("날짜형식이 맞지 않습니다.\nMMDD 형식으로 입력해주세요.");
           }
         }
       },
-      rowModify: function (rowIdx) {
-
+      dataModify: function () {
+        this.$set(this, 'isReadonly', false);
+        this.$set(this, 'isDisabled', false);
+      },
+      dataReadonly: function () {
+        this.$set(this, 'isReadonly', true);
+        this.$set(this, 'isDisabled', true);
       },
       rowDelete: function (userDetail, rowIdx) {
         this.userDetails.splice(rowIdx, 1);
@@ -519,10 +539,6 @@
           alert("사용금액 입력은 필수입니다.");
           return false;
         }
-        // if (this.isEmpty(this.projectsSelected)) {
-        //   alert("현 프로젝트 소속 입력은 필수입니다.");
-        //   return false;
-        // }
 
         // show 이벤트 플래그
         if (this.isEmpty(this.addYn)) {

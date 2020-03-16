@@ -114,42 +114,47 @@ app.route('/api/loadAllSaveInfo')
 app.route('/api/submitExpense')
     .post((req, res) => {
         console.log(req.body.objectData)
-        const username = req.body.objectData.username;
-        const grade = req.body.objectData.gradesSelected;
-        const project = req.body.objectData.projectsSelected;
-        const ud = req.body.objectData.data_config.past_month;
-        const submitted = req.body.objectData.submitted;
-        const reviewed = req.body.objectData.reviewed;
-        const approved = req.body.objectData.approved;
-        const userDetails = req.body.objectData.userDetails;
-        const dbSave = req.body.objectData.save_info;
-        // DB에 저장
-        // if (dbSave) {
-        //     connection.query(db_config.query3, [username, grade, project, ud, submitted, reviewed, approved], (err, result) => {
-        //
-        //     });
-        //
-        //     userDetails.forEach((item, index) => {
-        //         connection.query(db_config.query4, [username, ud, item.dates, item.codesSelected, item.description, item.amount, item.projectsSelected, item.notes], (err, result) => {
-        //
-        //         })
-        //         console.log(item);
-        //         console.log(index);
-        //     })
-        //
-        // } else { // 엑셀에 바로 저장
-        //
-        // }
-
         const result = {success: true}
-        // try {
-        //     const json = require('./data')
-        //     result.data = json
-        // } catch (err) {
-        //     result.success = false
-        //     result.err = err
-        // }
-        // await res.json(result);
+        try {
+            const username = req.body.objectData.username;
+            const grade = req.body.objectData.gradesSelected;
+            const project = req.body.objectData.projectsSelected;
+            const ud = req.body.objectData.data_config.curMonth;
+            const submitted = req.body.objectData.submitted;
+            const reviewed = req.body.objectData.reviewed;
+            const approved = req.body.objectData.approved;
+            const userDetails = req.body.objectData.userDetails;
+            const dbSave = req.body.objectData.save_info;
+
+            const sql1 = db_config.query3;
+            const sql1s = mysql.format(sql1, [username, grade, project, ud, submitted, reviewed, approved]);
+
+            const sql2 = db_config.query4;
+            const sql2s = mysql.format(sql2, []);
+
+            // DB에 저장
+            // if (dbSave) {
+            //     connection.query(db_config.query3, [username, grade, project, ud, submitted, reviewed, approved], (err, result) => {
+            //
+            //     });
+            //
+            //     userDetails.forEach((item, index) => {
+            //         connection.query(db_config.query4, [username, ud, item.dates, item.codesSelected, item.description, item.amount, item.projectsSelected, item.notes], (err, result) => {
+            //
+            //         })
+            //         console.log(item);
+            //         console.log(index);
+            //     })
+            //
+            // } else { // 엑셀에 바로 저장
+            //
+            // }
+            const json = require('./data')
+            result.data = json
+        } catch (err) {
+            result.success = false
+            result.err = err
+        }
     });
 
 app.route('/download')
