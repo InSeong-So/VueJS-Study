@@ -30,12 +30,12 @@ module.exports = {
     query4:
         "INSERT INTO EXPENSE_DETAILS (\n" +
         "username,userdetails,\n" +
-        "dates,codes,description,amount,projectsSelected,notes)\n" +
-        " VALUES (\n" +
-        " ?,?,\n" +
-        " ?,?,?,?,?,?);",
+        "dates,codesSelected,description,amount,projectsSelected,notes)\n" +
+        " VALUES ?;",
     query5:
         "SELECT T1.*\n" +
         "FROM EXPENSE_MASTER T1\n" +
-        "WHERE T1.USERNAME = ?;",
+        "WHERE T1.username = ?;",
+    query6:
+        "DELETE FROM EXPENSE_DETAILS WHERE username = ? AND userdetails = ?;"
 };

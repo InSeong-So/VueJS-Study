@@ -345,7 +345,8 @@
 
         <hr class="mb-4">
         <div class="custom-control custom-checkbox">
-          <input type="checkbox" class="custom-control-input" id="save_info" value="Y" v-model="save_info">
+          <input type="checkbox" class="custom-control-input" id="save_info" value="Y" v-model="save_info"
+                 v-bind:checked="save_info">
           <label class="custom-control-label" for="save_info">작성자 정보를 저장하여 다음에도 사용하기</label>
         </div>
         <hr class="mb-4">
@@ -386,10 +387,10 @@
         submitted: '',
         reviewed: '',
         approved: '',
-        save_info: '',
+        save_info: false,
         addYn: '',
         isReadonly: true,
-        isDisabled: true
+        isDisabled: true,
       }
     },
     methods: {
@@ -570,7 +571,10 @@
           objectData: this.$data
         })
           .then((result) => {
-
+            // DB 저장에 성공하면 입력박스 초기화
+            if (result.data.success) {
+              location.reload();
+            }
           });
 
         // 엑셀 다운로드 로직

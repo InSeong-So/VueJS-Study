@@ -113,47 +113,52 @@ app.route('/api/loadAllSaveInfo')
 
 app.route('/api/submitExpense')
     .post((req, res) => {
-        console.log(req.body.objectData)
+        // console.log(req.body.objectData)
         const result = {success: true}
         try {
             const username = req.body.objectData.username;
             const grade = req.body.objectData.gradesSelected;
             const project = req.body.objectData.projectsSelected;
-            const ud = req.body.objectData.data_config.curMonth;
+            const ud = req.body.objectData.curMonth;
             const submitted = req.body.objectData.submitted;
             const reviewed = req.body.objectData.reviewed;
             const approved = req.body.objectData.approved;
             const userDetails = req.body.objectData.userDetails;
+            let values = userDetails.map(obj => [username, ud, obj.dates, obj.codesSelected, obj.description, obj.amount, obj.projectsSelected, obj.notes]);
             const dbSave = req.body.objectData.save_info;
+            console.log(values);
 
+            // INSERT
             const sql1 = db_config.query3;
             const sql1s = mysql.format(sql1, [username, grade, project, ud, submitted, reviewed, approved]);
 
-            const sql2 = db_config.query4;
-            const sql2s = mysql.format(sql2, []);
+            // DELETE
+            const sql2 = db_config.query6;
+            const sql2s = mysql.format(sql2, [username, ud]);
+
+            // INSERT
+            const sql3 = db_config.query4;
+            const sql3s = mysql.format(sql3, [values]);
 
             // DB에 저장
-            // if (dbSave) {
-            //     connection.query(db_config.query3, [username, grade, project, ud, submitted, reviewed, approved], (err, result) => {
-            //
-            //     });
-            //
-            //     userDetails.forEach((item, index) => {
-            //         connection.query(db_config.query4, [username, ud, item.dates, item.codesSelected, item.description, item.amount, item.projectsSelected, item.notes], (err, result) => {
-            //
-            //         })
-            //         console.log(item);
-            //         console.log(index);
-            //     })
-            //
-            // } else { // 엑셀에 바로 저장
-            //
-            // }
-            const json = require('./data')
-            result.data = json
+            if (dbSave) {
+                connection.query(sql1s + sql2s + sql3s, (err, rows) => {
+                    if (err){
+                        result.success = false
+                        result.err = err
+                        res.json(result);
+                    }
+                    else{
+                        res.json(result);
+                    }
+                });
+            } else { // 엑셀에 바로 저장
+
+            }
         } catch (err) {
             result.success = false
             result.err = err
+            res.json(result);
         }
     });
 
