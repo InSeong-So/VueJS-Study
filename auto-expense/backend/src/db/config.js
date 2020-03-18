@@ -1,6 +1,6 @@
 module.exports = {
-    // host: '101.235.203.94',
-    host: '192.168.0.14',
+    host: '101.235.203.94',
+    // host: '192.168.0.14',
     user: 'sis_user',
     password: 'sis_user1!',
     port: 3105,

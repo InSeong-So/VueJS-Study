@@ -394,21 +394,6 @@
       }
     },
     methods: {
-      fetchData(token) {
-        this.$http.get('http://localhost:8226/api/records', {
-          headers: {'Authorization': `Bearer ${token}`}
-        })
-          .then(response => {
-            this.records = response.data.records;
-          })
-          .catch(error => {
-            if (error.response.status === 401) {
-              localStorage.removeItem('auth_token');
-              location.href = './login.html';
-            }
-            // handle error
-          });
-      },
       vue_init: function () {
         if (this.initYn === "N") {
           this.$http.get('http://localhost:8226/api/dbs')
@@ -596,10 +581,6 @@
 
     },
     created() {
-      // let token = localStorage.getItem('auth_token');
-      // if (!token) {
-      //   location.href = './login.html';
-      // }
       // this.fetchData(token);
 
       this.vue_init();
