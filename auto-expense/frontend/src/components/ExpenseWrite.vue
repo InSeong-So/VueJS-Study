@@ -277,40 +277,33 @@
               <tbody>
               <tr v-for="(userDetail, userDetailIndex) in userDetails">
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
-                           v-bind:readonly="isReadonly"
-                           :value="userDetailIndex+1" @blur="dataReadonly" @dblclick="dataModify"></td>
+                           :value="userDetailIndex+1"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
-                           v-bind:readonly="isReadonly"
-                           :value="userDetail.dates" @blur="dataReadonly" @dblclick="dataModify"></td>
+                           :value="userDetail.dates" @change="detailChange($event, userDetailIndex)"></td>
                 <td>
-                  <select class="custom-select" v-model="userDetail.codesSelected" v-bind:disabled="isDisabled"
-                          :value="userDetail.codesSelected" @blur="dataReadonly" @dblclick="dataModify">
+                  <select class="custom-select" v-model="userDetail.codesSelected"
+                          :value="userDetail.codesSelected">
                     <option disabled value="">선택</option>
                     <option v-for="code in codes" :value="code.codes_txt">
                       {{ code.codes_comment }}
                     </option>
                   </select>
                 </td>
-                <td><input type="text" class="form-control form-control-sm border-0" :value="userDetail.description"
-                           v-bind:readonly="isReadonly" @blur="dataReadonly" @dblclick="dataModify">
-                </td>
+                <td><input type="text" class="form-control form-control-sm border-0"
+                           :value="userDetail.description" @change="detailChange($event, userDetailIndex)"></td>
                 <td><input type="text" class="form-control form-control-sm text-center border-0"
-                           v-bind:readonly="isReadonly"
-                           :value="userDetail.amount" @blur="dataReadonly" @dblclick="dataModify"></td>
+                           :value="userDetail.amount" @change="detailChange($event, userDetailIndex)"></td>
                 <td>
-                  <select class="custom-select" v-bind:disabled="isDisabled" :value="userDetail.projectsSelected"
-                          v-model="userDetail.projectsSelected" @blur="dataReadonly" @dblclick="dataModify">
+                  <select class="custom-select" :value="userDetail.projectsSelected"
+                          v-model="userDetail.projectsSelected">
                     <option disabled value="">선택</option>
                     <option v-for="project in combo.projects" :value="project">
                       {{ project }}
                     </option>
                   </select>
                 </td>
-
                 <td><input type="text" class="form-control form-control-sm border-0"
-                           v-bind:readonly="isReadonly" :value="userDetail.notes" @blur="dataReadonly"
-                           @dblclick="dataModify">
-                </td>
+                           :value="userDetail.notes" @change="detailChange($event, userDetailIndex)"></td>
                 <td>
                   <button class="btn btn-primary btn-sm" @click="rowDelete(userDetail, userDetailIndex)">삭제</button>
                 </td>
@@ -389,8 +382,6 @@
         approved: '',
         save_info: false,
         addYn: '',
-        isReadonly: true,
-        isDisabled: true,
       }
     },
     methods: {
@@ -437,13 +428,9 @@
           }
         }
       },
-      dataModify: function () {
-        this.$set(this, 'isReadonly', false);
-        this.$set(this, 'isDisabled', false);
-      },
-      dataReadonly: function () {
-        this.$set(this, 'isReadonly', true);
-        this.$set(this, 'isDisabled', true);
+      detailChange: function ($event, userDetailIndex) {
+        console.log(this.$refs);
+        this.$set(this.userDetails[userDetailIndex], this.$refs, $event.target.value);
       },
       rowDelete: function (userDetail, rowIdx) {
         this.userDetails.splice(rowIdx, 1);
@@ -531,10 +518,12 @@
           this.$set(this, 'addYn', 'Y');
         }
 
+        let tempDates = new Date().getFullYear() + this.dates;
+
         // 데이터에 추가
         this.userDetails.push({
           // idx: this.idx++,
-          dates: this.dates,
+          dates: tempDates.replace(/(\d{4})(\d{2})(\d{2})/g, '$1-$2-$3'),
           codesSelected: this.codesSelected,
           description: this.description,
           amount: this.amount,

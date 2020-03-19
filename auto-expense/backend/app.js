@@ -9,6 +9,7 @@ const mysql = require('mysql');
 const db_config = require('./src/db/config');
 const data_config = require('./src/data/date');
 const ex_config = require('./src/ex/excelWrite');
+const StringUtil = require('./src/data/StringUtil');
 const connection = mysql.createConnection(db_config);
 
 const app = express();
@@ -124,9 +125,9 @@ app.route('/api/submitExpense')
             const reviewed = req.body.objectData.reviewed;
             const approved = req.body.objectData.approved;
             const userDetails = req.body.objectData.userDetails;
+            const dates = req.body.objectData.data_config;
             let values = userDetails.map(obj => [username, ud, obj.dates, obj.codesSelected, obj.description, obj.amount, obj.projectsSelected, obj.notes]);
             const dbSave = req.body.objectData.save_info;
-            console.log(values);
 
             // INSERT
             const sql1 = db_config.query3;
@@ -143,17 +144,26 @@ app.route('/api/submitExpense')
             // DB에 저장
             if (dbSave) {
                 connection.query(sql1s + sql2s + sql3s, (err, rows) => {
-                    if (err){
+                    if (err) {
                         result.success = false
                         result.err = err
                         res.json(result);
-                    }
-                    else{
+                    } else {
                         res.json(result);
                     }
                 });
             } else { // 엑셀에 바로 저장
-
+                const writeData = {
+                    period: dates[0].cur_period,
+                    descriptions: values,
+                    filename: username + "_" + dates[0].to_ymd2,
+                    writeDay: dates[0].to_ymd,
+                    submitted: StringUtil.spaceAdd(submitted),
+                    reviewed: StringUtil.spaceAdd(reviewed),
+                    approved: StringUtil.spaceAdd(approved),
+                };
+                console.log(writeData.descriptions[0])
+                // ex_config.excelWrite(writeData).then(r => console.log("finished!"));
             }
         } catch (err) {
             result.success = false
