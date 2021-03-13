@@ -1,6 +1,9 @@
 <template>
   <div id="app">
-    hello
+    <!-- url이 만약 news -->
+    <!-- <NewsView></NewsView> -->
+    <!-- url이 만약에 path에 일치하는 주소라면 -->
+    <router-view></router-view>
   </div>
 </template>
 

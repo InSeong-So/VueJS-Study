@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 // 컴포넌트 페이지 import
 import NewsView from '../views/NewsView.vue'
 import AskView from '../views/AskView.vue'
-import JobsView from '../views/JobsVieww.vue'
+import JobsView from '../views/JobsView.vue'
 // + 같은 단어 동시 선택 단축키 : Ctrl + D, Cmd + D
 
 Vue.use(VueRouter);
