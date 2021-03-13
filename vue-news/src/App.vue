@@ -1,29 +1,27 @@
 <template>
   <div id="app">
-    <!-- url이 만약 news -->
-    <!-- <NewsView></NewsView> -->
-    <!-- url이 만약에 path에 일치하는 주소라면 -->
+    <!-- Strongly Recommended-->
+    <ToolBar></ToolBar>
+    <!-- Essential -->
+    <!-- <tool-bar></tool-bar> -->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-export default {
-  methods:{
-    fetchData(){
-      console.log('hello');
-    }
-  }
-}
-</script>
+import ToolBar from "./components/ToolBar.vue";
 
+export default {
+  components: {
+    // vs-code는 파스칼케이스로 자동 등록
+    // 소문자-케밥케이스로 HTML사용
+    ToolBar,
+  },
+};
+</script>
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  padding: 0;
+  margin: 0;
 }
 </style>

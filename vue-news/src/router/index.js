@@ -11,6 +11,10 @@ Vue.use(VueRouter);
 export const router = new VueRouter({
     routes: [
         {
+            path: '/',
+            redirect: '/news',
+        },
+        {
             // path : url 주소
             path: '/news',
             // component : 특정 url 주소로 갔을 때 표시될 컴포넌트
