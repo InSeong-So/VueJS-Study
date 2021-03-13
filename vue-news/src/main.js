@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 // 분리한 router 모듈
-import {router} from './router/index.js';
+import {router} from './routes/index.js';
 
 Vue.config.productionTip = false
 
