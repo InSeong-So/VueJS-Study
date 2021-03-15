@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div>jquery ajax</div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+    <script>
+        function fetchData() {
+            // 1
+            var result = [];
+
+            // 2
+            $.ajax({
+                url: 'https://api.hnpwa.com/v0/news/1.json',
+                success: function (data) {
+                    console.log('데이터 호출 결과', data);
+                    result = data;
+                }
+            });
+
+            // 3
+            console.log('함수 결과', result);
+        }
+        fetchData();
+
+        // 0 프로미스 사용
+        function callAjax(){
+          return new Promise(function(resolve, reject){
+            $.ajax({
+                url: 'https://api.hnpwa.com/v0/news/1.json',
+                success : function(data){
+                  resolve(data);
+                }
+            });
+          });
+        }
+
+        // 프로미스 테스트
+        callAjax()
+          .then(function(data){
+            console.log('데이터 호출 결과', data);
+            result = data;
+            console.log('함수 결과', result);
+          })
+          .catch(function(err){
+            console.log(err);
+          });
+    </script>
+</body>
+
+</html>
