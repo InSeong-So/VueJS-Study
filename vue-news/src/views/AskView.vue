@@ -1,6 +1,9 @@
 <template>
   <div>
-    <div v-for="item in askItems">{{ item.title }}</div>
+    <p v-for="item in askItems">
+      <a :href="item.url">{{ item.title }}</a>
+      <small>{{ item.time_ago }} by {{ item.user }}</small>
+    </p>
   </div>
 </template>
 
@@ -15,7 +18,7 @@ export default {
     },
     // 2 : 별로 간편하지 않음(ECMA6 산개연산자)
     ...mapState({
-      fetcedAsk: (state) => state.ask,
+      fetchedAsk: (state) => state.ask,
     }),
     // 3 : 변수에 저장하여 데이터를 사용하고 싶은 경우
     ...mapGetters({
@@ -23,10 +26,8 @@ export default {
       askItems: "fetchedAsk",
     }),
     // 3-1 : 데이터를 바로 사용하고 싶은 경우
-    ...mapGetters([
-      'fetcedAsk'
-    ])
-  }, 
+    ...mapGetters(["fetchedAsk"]),
+  },
   created() {
     this.$store.dispatch("FETCH_ASK");
   },
