@@ -3,11 +3,9 @@
     <ListItem></ListItem>
     <!-- <ul class="news-list">
       <li v-for="item in this.$store.state.news" class="post">
-        <!-- 포인트 영역 -->
         <div class="points">
           {{ item.points }}
         </div>
-        <!-- 기타 정보 영역-->
         <div>
           <p class="news-title">
             <router-link :to="`/item/${item.id}`">
@@ -23,13 +21,6 @@
         </div>
       </li>
     </ul> -->
-
-    <!-- <p v-for="item in askItems">
-      <router-link :to="`/item/${item.id}`">
-        {{ item.title }}
-      </router-link>
-      <small> {{ item.time_ago }} by {{ item.user }} </small>
-    </p> -->
   </div>
 </template>
 
