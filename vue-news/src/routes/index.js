@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 // 컴포넌트 페이지 import : HOC 적용으로 인해 필요 없어짐
-// import NewsView from '../views/NewsView.vue'
+import NewsView from '../views/NewsView.vue'
 // import AskView from '../views/AskView.vue'
 // import JobsView from '../views/JobsView.vue'
 import UserView from '../views/UserView.vue'
@@ -24,8 +24,8 @@ export const router = new VueRouter({
             path: '/news',
             name: 'news',
             // component : 특정 url 주소로 갔을 때 표시될 컴포넌트
-            // component: NewsView,
-            component: createListView('NewsView'),
+            component: NewsView, // mixins 사용
+            // component: createListView('NewsView'),
         },
         {
             path: '/ask',
