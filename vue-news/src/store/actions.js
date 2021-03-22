@@ -34,9 +34,13 @@ export default {
     //             console.log(error);
     //         })
     // },
+    // #2
     FETCH_LIST({ commit }, pageName) {
-        fetchList(pageName)
+        // #3 : promise 체이닝
+        return fetchList(pageName)
             .then(({ data }) => {
+                // #4
+                console.log(4);
                 commit("SET_LIST", data);
             })
             .catch(error => {
@@ -44,7 +48,7 @@ export default {
             });
     },
     FETCH_USER({ commit }, name) {
-        fetchUserInfo(name)
+        return fetchUserInfo(name)
             .then(({ data }) => {
                 commit("SET_USER", data);
             })
@@ -53,7 +57,7 @@ export default {
             });
     },
     FETCH_ITEM({ commit }, id) {
-        fetchCommentItem(id)
+        return fetchCommentItem(id)
             .then(({ data }) => {
                 commit("SET_ITEM", data);
             })

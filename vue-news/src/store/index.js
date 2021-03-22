@@ -15,6 +15,7 @@ export const store = new Vuex.Store({
         user: {},
         item: {},
         // 리스트를 불러올 상태
+        // 특정 상태를 여러 화면에서 공유할 때 독립적인 상태를 관리하는게 아니므로 문제가 발생할 수 있음
         list: [],
     },
     getters: {
