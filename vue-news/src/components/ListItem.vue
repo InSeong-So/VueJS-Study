@@ -8,14 +8,30 @@
         </div>
         <!-- 기타 정보 영역-->
         <div>
+          <!-- 타이틀 영역 -->
           <p class="news-title">
-            <a :href="item.url">{{ item.title }}</a>
+            <!-- 분기 처리 -->
+            <template v-if="item.domain">
+              <a :href="item.url">{{ item.title }}</a>
+            </template>
+            <template v-else>
+              <router-link :to="`/item/${item.id}`">
+                {{ item.title }}
+              </router-link>
+            </template>
           </p>
           <small class="link-text">
             {{ item.time_ago }} by
-            <router-link :to="`/user/${item.user}`" class="link-text">
+            <router-link
+              v-if="item.user"
+              :to="`/user/${item.user}`"
+              class="link-text"
+            >
               {{ item.user }}
             </router-link>
+            <a v-else :href="item.url">
+              {{ item.domain }}
+            </a>
           </small>
         </div>
       </li>
