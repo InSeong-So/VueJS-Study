@@ -13,7 +13,7 @@
             <a :href="item.url">{{ item.title }}</a>
           </p>
           <small class="link-text">
-            by
+            {{ item.time_ago }} by
             <router-link :to="`/user/${item.user}`" class="link-text">
               {{ item.user }}
             </router-link>
