@@ -1,24 +1,49 @@
 <template>
   <div id="app">
-    <!-- Strongly Recommended-->
     <ToolBar></ToolBar>
-    <!-- name에 들어오는 내용이 css의 prefix가 됨 -->
     <transition name="page">
       <router-view></router-view>
     </transition>
-    <!-- Essential -->
-    <!-- <tool-bar></tool-bar> -->
+    <!-- 다른 컴포넌트와 동등 관계이므로 props를 사용할 수 없음 -->
+    <Spinner :loading="loadingStatus"></Spinner>
   </div>
 </template>
 
 <script>
 import ToolBar from "./components/ToolBar.vue";
+import Spinner from "./components/Spinner.vue";
+import bus from "./utils/bus.js";
 
 export default {
   components: {
-    // vs-code는 파스칼케이스로 자동 등록
-    // 소문자-케밥케이스로 HTML사용
     ToolBar,
+    Spinner,
+  },
+  data() {
+    return {
+      loadingStatus: false,
+    };
+  },
+  methods: {
+    startSpinner() {
+      this.loadingStatus = true;
+    },
+    endSpinner() {
+      this.loadingStatus = false;
+    },
+  },
+  created() {
+    // bus.$on("start:spinner", () => {
+    //   this.loadingStatus = true;
+    // });
+    // addEventListenr 같은 역할
+    bus.$on("start:spinner", this.startSpinner);
+    bus.$on("end:spinner", this.endSpinner);
+  },
+  beforeDestory() {
+    // 이벤트 객체가 계속 쌓이기 때문에 반드시 꺼줘야 함
+    bus.$off("start:spinner", this.startSpinner);
+    bus.$off("end:spinner", this.endSpinner);
   },
 };
 </script>

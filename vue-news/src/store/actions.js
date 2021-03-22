@@ -8,6 +8,7 @@ export default {
                 // action은 항상 context라는 객체(변수, 인자)가 제공이된다.
                 // mutations의 SET_NEWS를 실행한다.
                 context.commit('SET_NEWS', response.data);
+                return response;
             })
             .catch(error => {
                 console.log(error);
