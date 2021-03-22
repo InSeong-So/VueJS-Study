@@ -39,8 +39,6 @@ export default {
         // #3 : promise 체이닝
         return fetchList(pageName)
             .then(({ data }) => {
-                // #4
-                console.log(4);
                 commit("SET_LIST", data);
             })
             .catch(error => {
