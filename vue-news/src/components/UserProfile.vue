@@ -5,9 +5,9 @@
         <i class="fas fa-user"></i>
       </div>
       <div class="user-description">
-        <div>{{ userInfo.id }}</div>
+        <div>{{ info.id }}</div>
         <div class="time">
-          {{ userInfo.created }}
+          {{ info.created }}
         </div>
       </div>
     </div>
@@ -16,12 +16,9 @@
 
 <script>
 export default {
-  // UserView.vue에서 store에 user 데이터를 담는다.
-  // 이미 store에 담겨있으므로 해당 컴포넌트에서 그대로 가져다 쓴다.
-  computed: {
-    userInfo() {
-      return this.$store.state.user;
-    },
+  // props로 userInfo 데이터를 내려보낸다.
+  props: {
+    info: Object,
   },
 };
 </script>
