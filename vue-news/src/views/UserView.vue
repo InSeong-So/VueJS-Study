@@ -3,12 +3,9 @@
     <UserProfile :info="userInfo">
       <div slot="userName">{{ userInfo.id }}</div>
       <!-- 태그 없이 텍스트만 들어감 -->
-      <template slot="time">{{ userInfo.created }}</template>
-      <div slot="karma">{{ userInfo.karma }}</div>
+      <span slot="time">{{ "Joined " + userInfo.created }}, </span>
+      <span slot="karma">{{ userInfo.karma }}</span>
     </UserProfile>
-    <!-- <p>name : {{ userInfo.id }}</p>
-    <p>karma : {{ userInfo.karma }}</p>
-    <p>created : {{ userInfo.created }}</p> -->
   </div>
 </template>
 
@@ -20,9 +17,6 @@ export default {
     UserProfile,
   },
   computed: {
-    // 태그 안에 코드들이 최대한 정돈되게 해야한다.
-    // 어느 위치에 어떤 변수가 있는지 모르는 상황에서는
-    // 최대한 정리해야한다.
     userInfo() {
       return this.$store.state.user;
     },

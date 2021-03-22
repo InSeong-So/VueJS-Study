@@ -6,19 +6,19 @@
         <i class="fas fa-user"></i>
       </div>
       <div class="user-description">
-        <!-- <div>userName : {{ info.id }}</div> -->
         <!-- 하위 컴포넌트의 내용을 미완성인 상태로 둔다 -->
         <slot name="userName">
           <!-- 상위 컴포넌트에서 정의할 영역-->
         </slot>
         <div class="time">
-          <!-- time : {{ info.created }} -->
           <slot name="time">
             <!-- 상위 컴포넌트에서 정의할 영역-->
           </slot>
         </div>
         <div>
-          <slot name="karma"></slot>
+          <slot name="karma">
+            <!-- 상위 컴포넌트에서 정의할 영역-->
+          </slot>
         </div>
       </div>
     </div>
