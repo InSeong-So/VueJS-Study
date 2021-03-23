@@ -5,7 +5,7 @@
 <script>
 export default {
   mounted() {
-    var barChart = new Chart(this.$refs.barChart, {
+    var barChart = new this.$_Chart(this.$refs.barChart, {
       type: "bar",
       data: {
         labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
