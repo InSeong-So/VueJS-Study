@@ -13,8 +13,13 @@ function fetchNewsList() {
     return axios.get(`${config.baseUrl}news/1.json`);
 }
 
-function fetchAskList() {
-    return axios.get(`${config.baseUrl}ask/1.json`);
+async function fetchAskList() {
+    try {
+        return await axios.get(`${config.baseUrl}ask/1.json`);
+    } catch (error) {
+        console.log(error);
+    }
+
 }
 
 function fetchJobsList() {
@@ -22,8 +27,12 @@ function fetchJobsList() {
 }
 
 // news, jobs, ask를 포용하는 함수
-function fetchList(pageName) {
-    return axios.get(`${config.baseUrl}${pageName}/1.json`);
+async function fetchList(pageName) {
+    try {
+        return await axios.get(`${config.baseUrl}${pageName}/1.json`);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 function fetchUserInfo(userName) {
