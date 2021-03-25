@@ -20,7 +20,7 @@
       // template : "<p>{{message}}</p>"
       render: function (createElement) {
         // return createElement('태그 이름', '태그 속성', '하위 태그 내용');
-        return createElement('p', 'Hello Vue');
+        return createElement('p', this.message);
       }
     })
   </script>

@@ -21,6 +21,7 @@ export default {
       });
   },
   render() {
+    // scopedslot을 통해 노출시키고 상위 컴포넌트에서 받아 사용함
     return this.$scopedSlots.default({
       response: this.response,
       loading: this.loading,

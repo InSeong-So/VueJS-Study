@@ -3,6 +3,7 @@ import App from './App.vue'
 
 Vue.config.productionTip = false
 
+// h : hyper Script
 new Vue({
   render: h => h(App),
   // 1
