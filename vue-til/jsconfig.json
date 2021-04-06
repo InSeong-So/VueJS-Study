@@ -1,0 +1,18 @@
+// vscode의 내부기능을 활용하기 위한 파일이므로 vue 설정파일이라고 착각하지 말 것
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~/*": [
+                "./*"
+            ],
+            "@/*": [
+                "./src/*"
+            ],
+        }
+    },
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
+}

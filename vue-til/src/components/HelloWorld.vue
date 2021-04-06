@@ -116,6 +116,9 @@ export default {
   props: {
     msg: String,
   },
+  created() {
+    console.log("?A");
+  },
 };
 </script>
 
