@@ -14,11 +14,11 @@ function createInstanceWithAuth(url) {
   });
   return setInterceptors(instance);
 }
+
 export const instance = createInstance();
-// 기본 url이 posts가 된 변수
 export const posts = createInstanceWithAuth('posts');
 
-// GET - posts
+// CREATE - posts
 // POST - posts
 // PUT - posts {id}
 // DELETE - posts {id}
