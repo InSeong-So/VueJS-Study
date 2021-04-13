@@ -44,16 +44,16 @@ export default {
   },
   methods: {
     async submitForm() {
+      const id = this.$route.params.id;
       try {
-        const id = this.$route.params.id;
         await editPost(id, {
           title: this.title,
           contents: this.contents,
         });
         this.$router.push('/main');
       } catch (error) {
-        console.log(error.response.data.message);
-        this.logMessage = error.response.data.message;
+        console.log(error);
+        this.logMessage = error;
       }
     },
   },
