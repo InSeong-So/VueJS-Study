@@ -1,14 +1,12 @@
-// 로그인, 회원 가입, (ex) 회원 탈퇴
-import { instance } from './index';
+import { auth } from './index';
 
-// 회원가입 API
-function registerUser(userData) {
-  return instance.post('signup', userData);
+// users
+function loginUser(data) {
+	return auth.post('login', data);
 }
 
-// 로그인 API
-function loginUser(userData) {
-  return instance.post('login', userData);
+function signupUser(data) {
+	return auth.post('signup', data);
 }
 
-export { registerUser, loginUser };
+export { loginUser, signupUser };
